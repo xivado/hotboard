@@ -54,7 +54,7 @@ check('SHOW 与折叠 CSS 一致', show > 0 && new RegExp('nth-child\\(n\\+' + (
 
 const catsBlock = js.match(/const CATS = \[([\s\S]*?)\n\];/)?.[1] || '';
 const catIds = [...catsBlock.matchAll(/id:'([^']+)'/g)].map(m => m[1]);
-check('分类数量为 5', catIds.length === 5, `分类数量 ${catIds.length}`);
+check('分类数量为 3', catIds.length === 3, `分类数量 ${catIds.length}`);
 
 const sourcesBlock = js.match(/const SOURCES = \[([\s\S]*?)\n\];/)?.[1] || '';
 const sources = [...sourcesBlock.matchAll(/\{\s*id:'([^']+)'([^\n]*)\}/g)].map(m => ({
@@ -67,11 +67,11 @@ const sources = [...sourcesBlock.matchAll(/\{\s*id:'([^']+)'([^\n]*)\}/g)].map(m
   regions: m[2].match(/regions:(X_REGIONS|APP_REGIONS)/)?.[1] || '',
   region: m[2].match(/region:'([^']+)'/)?.[1] || '',
 }));
-check('榜单数量为 44', sources.length === 44, `榜单数量 ${sources.length}`);
+check('榜单数量为 28', sources.length === 28, `榜单数量 ${sources.length}`);
 check('榜单 id 唯一', new Set(sources.map(s => s.id)).size === sources.length);
 check('所有分类都在 CATS 中', sources.every(s => catIds.includes(s.cat)), sources.filter(s => !catIds.includes(s.cat)).map(s => s.id).join(','));
 
-const allowedApis = new Set(['sina-hot', 'netease', 'thepaper', 'rss', 'douban', 'x', 'appstore', 'hn', 'devto']);
+const allowedApis = new Set(['sina-hot', 'netease', 'rss', 'x', 'appstore', 'hn', 'devto']);
 const badSources = sources.filter(s => {
   if (!s.cid && !s.api) return true;
   if (s.api && !allowedApis.has(s.api)) return true;

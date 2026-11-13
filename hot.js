@@ -3,8 +3,6 @@ const CATS = [
   { id:'hot',    name:'综合热搜', en:'TRENDING' },
   { id:'tech',   name:'科技开发', en:'TECH & DEV' },
   { id:'global', name:'海外视野', en:'GLOBAL' },
-  { id:'news',   name:'新闻资讯', en:'NEWS' },
-  { id:'fun',    name:'影音娱乐', en:'ENTERTAINMENT' },
 ];
 /* X 趋势可选地区：id 对应 getdaytrends 的国家/地区页 */
 const X_REGIONS = [
@@ -141,38 +139,20 @@ const SOURCES = [
   { id:'aljazeera',  cat:'global', name:'半岛电视台',    char:'半',  color:'#f7a800', sub:'国际新闻头条',         api:'rss', nohot:true, feed:'https://www.aljazeera.com/xml/rss/all.xml', home:'https://www.aljazeera.com/' },
   { id:'npr',        cat:'global', name:'NPR',           char:'NPR', color:'#d71920', sub:'Top Stories 头条新闻', api:'rss', nohot:true, feed:'https://feeds.npr.org/1001/rss.xml', home:'https://www.npr.org/sections/news/' },
   { id:'dw',         cat:'global', name:'德国之声',      char:'DW',  color:'#0091d5', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://rss.dw.com/rdf/rss-en-world', home:'https://www.dw.com/en/world/s-1429' },
-  { id:'txnews',     cat:'news',   name:'腾讯新闻·热问', char:'腾', color:'#12b7f5', sub:'全网热议话题',         cid:'12owgX0oNV',   home:'https://news.qq.com/' },
-  { id:'sina',       cat:'news',   name:'新浪财经',      char:'新', color:'#f6842e', sub:'点击量排行',           cid:'rx9ozj7oXb', home:'https://finance.sina.com.cn/' },
-  { id:'cbn',        cat:'news',   name:'第一财经',      char:'第', color:'#c0392b', sub:'新闻排行周榜',         cid:'0MdKam4ow1',                     home:'https://www.yicai.com/' },
-  { id:'xueqiu',     cat:'news',   name:'雪球',          char:'雪', color:'#0089e0', sub:'今日投资话题',         cid:'X12owXzvNV',       home:'https://xueqiu.com/' },
-  { id:'thepaper',   cat:'news',   name:'澎湃新闻',      char:'澎', color:'#e66a2c', sub:'热点新闻榜',           api:'thepaper', nohot:true,           home:'https://www.thepaper.cn/' },
-  { id:'chinanews',  cat:'news',   name:'中国新闻网',    char:'中', color:'#c8102e', sub:'即时新闻',             api:'rss', nohot:true, feed:'https://www.chinanews.com.cn/rss/scroll-news.xml', home:'https://www.chinanews.com.cn/' },
-  { id:'wallstreetcn', cat:'news', name:'华尔街见闻',    char:'华', color:'#d0021b', sub:'热门资讯',             cid:'G2me3ndwjq',                     home:'https://wallstreetcn.com/' },
-  { id:'bili',       cat:'fun',    name:'哔哩哔哩',      char:'B',  color:'#fb7299', sub:'全站日榜',             cid:'74KvxwokxM',     home:'https://www.bilibili.com/v/popular/rank/all' },
-  { id:'douyin',     cat:'fun',    name:'抖音热点',      char:'抖', color:'#fe2c55', sub:'热门视频榜',           cid:'DpQvNABoNE',       home:'https://www.douyin.com/hot' },
-  { id:'douban',     cat:'fun',    name:'豆瓣电影',      char:'豆', color:'#42bd56', sub:'新片榜',               api:'douban',                        home:'https://movie.douban.com/chart' },
-  { id:'hupu',       cat:'fun',    name:'虎扑步行街',    char:'虎', color:'#c7232c', sub:'步行街热帖',           cid:'G47o8weMmN',         home:'https://bbs.hupu.com/all-gambia' },
-  { id:'weread',     cat:'fun',    name:'微信读书',      char:'读', color:'#00a99d', sub:'总榜',                 cid:'4KvxEX0dkx',                     home:'https://weread.qq.com/' },
-  { id:'dongqiudi',  cat:'fun',    name:'懂球帝',        char:'球', color:'#16a34a', sub:'足球热点榜',           cid:'n3moBE1eN5', nohot:true,         home:'https://www.dongqiudi.com/' },
-  { id:'kuaishou',   cat:'fun',    name:'快手',          char:'快', color:'#ff5000', sub:'快手热榜',             cid:'MZd7PrPerO',                     home:'https://www.kuaishou.com/' },
-  { id:'maoyan',     cat:'fun',    name:'猫眼电影',      char:'猫', color:'#ef4238', sub:'电影热度榜',           cid:'9JndkpJe3V', nohot:true,         home:'https://www.maoyan.com/' },
-  { id:'imdb',       cat:'fun',    name:'IMDb',          char:'IMDb', color:'#f5c518', sub:'Most Popular 影视榜', cid:'VaobbkqoAj', nohot:true,          home:'https://www.imdb.com/chart/moviemeter/' },
 ];
 
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
 const ICONS = {
-  weibo:'weibo.svg',       zhihu:'zhihu.png',       toutiao:'toutiao.png',
-  smzdm:'smzdm.jpg',       tieba:'tieba.jpg',       github:'github.png',
-  juejin:'juejin.svg',     sspai:'sspai.png',       ithome:'ithome.png',     kr36:'kr36.jpg',
-  csdn:'csdn.svg',         zcool:'zcool.svg',       phunt:'phunt.svg',       appstore:'appstore.png',
-  hackernews:'hackernews.ico', devto:'devto.svg',   txnews:'txnews.png',     sina:'sina.png',
-  cbn:'cbn.png',           xueqiu:'xueqiu.jpg',     bili:'bili.png',         douyin:'douyin.png',
-  douban:'douban.svg',     hupu:'hupu.png',         weread:'weread.svg',     dongqiudi:'dongqiudi.png',
-  x:'x.svg',               bbc:'bbc.svg',           nyt:'newyorktimes.svg',  guardian:'theguardian.svg',
-  aljazeera:'aljazeera.png', npr:'npr.png',         dw:'dw.png',
-  sinahot:'sinahot.jpg',   netease:'netease.jpg',   huxiu:'huxiu.jpg',       oschina:'oschina.jpg',
-  renren:'renren.jpg',     thepaper:'thepaper.jpg', chinanews:'chinanews.jpg', wallstreetcn:'wallstreetcn.jpg',
-  kuaishou:'kuaishou.jpg', maoyan:'maoyan.jpg',    imdb:'imdb.svg',
+  weibo:'weibo.svg',           zhihu:'zhihu.png',           toutiao:'toutiao.png',
+  smzdm:'smzdm.jpg',           tieba:'tieba.jpg',           sinahot:'sinahot.jpg',
+  netease:'netease.jpg',       github:'github.png',         juejin:'juejin.svg',
+  sspai:'sspai.png',           ithome:'ithome.png',         kr36:'kr36.jpg',
+  csdn:'csdn.svg',             zcool:'zcool.svg',           huxiu:'huxiu.jpg',
+  oschina:'oschina.jpg',       renren:'renren.jpg',         phunt:'phunt.svg',
+  appstore:'appstore.png',     hackernews:'hackernews.ico', devto:'devto.svg',
+  x:'x.svg',                   bbc:'bbc.svg',               nyt:'newyorktimes.svg',
+  guardian:'theguardian.svg',  aljazeera:'aljazeera.png',   npr:'npr.png',
+  dw:'dw.png',
 };
 const iconURL = id => ICONS[id] ? `icons/${ICONS[id]}` : '';
 
@@ -191,14 +171,11 @@ const FAIL_ALERT_MIN = 3;        /* 失败提示条显示的失败数阈值 */
 const API_CODELIFE = id => `https://api.codelife.cc/api/top/list?lang=cn&id=${encodeURIComponent(id)}&_=${Date.now()}`;
 const API_HN       = 'https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=20';
 const API_DEVTO    = 'https://dev.to/api/articles?top=7&per_page=20';
-/* 豆瓣官方接口未开放 CORS，经 Redocly 公共代理读取官方页面 */
-const API_DOUBAN     = 'https://cors.redoc.ly/https://movie.douban.com/chart';
-const API_DOUBAN_HOT = 'https://cors.redoc.ly/https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=20&page_start=0';
 /* X 官方未提供浏览器可用的趋势接口，读取 getdaytrends 的全球/各地区趋势页 */
 const API_X          = 'https://cors.redoc.ly/https://getdaytrends.com/';
 /* App Store 分区免费榜：iTunes RSS 未开放 CORS，经 Redocly 代理读取 */
 const API_ITUNES     = cc => `https://cors.redoc.ly/https://itunes.apple.com/${encodeURIComponent(cc)}/rss/topfreeapplications/limit=${SHOW}/json`;
-/* 综合与新闻热榜：读取平台公开榜单接口，经 Redocly 代理 */
+/* 综合热榜：读取平台公开榜单接口，经 Redocly 代理 */
 function sinaDay(d = new Date()){
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Shanghai', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(d);
   const pick = type => parts.find(p => p.type === type)?.value || '';
@@ -209,7 +186,6 @@ const API_SINA_HOT   = () => {
   return `https://cors.redoc.ly/https://top.news.sina.com.cn/ws/GetTopDataList.php?top_type=day&top_cat=www_www_all_suda_suda&top_time=${day}&top_show_num=50&top_order=DESC&js_var=all_1_data`;
 };
 const API_NETEASE    = 'https://cors.redoc.ly/https://m.163.com/fe/api/hot/news/flow';
-const API_THEPAPER   = 'https://cors.redoc.ly/https://cache.thepaper.cn/contentapi/wwwIndex/rightSidebar';
 
 /* ================= 工具 ================= */
 const $  = s => document.querySelector(s);
@@ -542,33 +518,6 @@ function buildCard(src){
   cardMap.set(src.id, el);
   return el;
 }
-async function loadDouban(_src, signal){
-  try{
-    const html = await getText(API_DOUBAN, 15000, 'text/html', signal);
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const title = [...doc.querySelectorAll('h2')].find(el => el.textContent.includes('豆瓣新片榜'));
-    const section = title?.closest('.article') || doc.querySelector('.article');
-    const items = section ? [...section.querySelectorAll('.item')].map(row => {
-      const link = row.querySelector('a.nbg') || row.querySelector('.pl2 a');
-      const href = link?.getAttribute('href') || '';
-      return {
-        title: (link?.getAttribute('title') || link?.querySelector('img')?.alt || '').trim(),
-        /* DOMParser 文档继承当前页面 base URL，相对链接需显式按豆瓣域名解析，避免指向本站 */
-        url: href ? new URL(href, 'https://movie.douban.com/chart').href : '',
-        score: row.querySelector('.rating_nums')?.textContent.trim() || '',
-      };
-    }).filter(it => it.title && it.url) : [];
-    if (items.length) return items;
-  }catch(e){
-    if (signal?.aborted) throw e;
-    console.warn('[hotboard] 豆瓣页面解析失败，尝试热门接口', e?.name === 'AbortError' ? '请求超时' : e);
-  }
-  const j = await getJSON(API_DOUBAN_HOT, 12000, signal);
-  if (j && Array.isArray(j.subjects) && j.subjects.length){
-    return j.subjects.map(it => ({ title: it.title, url: it.url, score: it.rate || '' }));
-  }
-  throw new Error('豆瓣数据异常');
-}
 async function loadX(src, signal){
   const region = src.region || 'united-states';
   const slug = region !== 'worldwide' ? `${region}/` : '';
@@ -617,17 +566,6 @@ async function loadNeteaseHot(_src, signal){
   }
   throw new Error('网易新闻数据异常');
 }
-async function loadThePaperHot(_src, signal){
-  const j = await getJSON(API_THEPAPER, 18000, signal);
-  const list = j?.data?.hotNews;
-  if (Array.isArray(list) && list.length){
-    return list.map(it => ({
-      title: it.name,
-      url: it.link || `https://www.thepaper.cn/newsDetail_forward_${it.contId}`,
-    })).filter(it => it.title && it.url).slice(0, 30);
-  }
-  throw new Error('澎湃新闻数据异常');
-}
 async function loadRSS(src, signal){
   const xml = await getText('https://cors.redoc.ly/' + src.feed, 18000, 'application/rss+xml, application/xml, text/xml, */*', signal);
   const doc = new DOMParser().parseFromString(xml, 'text/xml');
@@ -661,9 +599,7 @@ async function loadDevto(_src, signal){
 const LOADERS = {
   'sina-hot': loadSinaHot,
   netease: loadNeteaseHot,
-  thepaper: loadThePaperHot,
   rss: loadRSS,
-  douban: loadDouban,
   x: loadX,
   appstore: loadAppStore,
   hn: loadHN,
