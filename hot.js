@@ -311,18 +311,9 @@ function toast(msg){
   setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3600);
 }
 
-/* ================= 时钟 ================= */
-const WD = '日一二三四五六';
-function tickClock(){
-  const d = new Date();
-  $('#clock-time').innerHTML = `${pad(d.getHours())}<i>:</i>${pad(d.getMinutes())}<i>:</i>${pad(d.getSeconds())}`;
-  $('#clock-date').textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${WD[d.getDay()]}`;
-}
-tickClock();
-
-/* ================= 主题切换 ================= */
-let themeTarget = document.documentElement.dataset.theme || 'light';
-let themeSwitchId = 0;
+/* ================= 跟随系统深浅色（无手动切换） ================= */
+const themeMQ = matchMedia('(prefers-color-scheme: dark)');
+try { localStorage.removeItem('hotboard-theme'); } catch(e){}
 function syncThemeColor(theme){
   const metas = document.querySelectorAll('meta[name="theme-color"]');
   const color = theme === 'dark' ? '#131519' : '#f3f2ec';
@@ -331,52 +322,12 @@ function syncThemeColor(theme){
     else meta.remove();
   });
 }
-syncThemeColor(themeTarget);
-function commitTheme(root, next){
-  root.dataset.theme = next;
-  syncThemeColor(next);
-  try { localStorage.setItem('hotboard-theme', next); } catch(e){}
+function applyTheme(theme){
+  document.documentElement.dataset.theme = theme;
+  syncThemeColor(theme);
 }
-/* 未手动选择过主题时，实时跟随系统深浅色变化（不写入 localStorage，避免冻结跟随） */
-matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', e => {
-  let manual = false;
-  try { manual = !!localStorage.getItem('hotboard-theme'); } catch(_){}
-  if (manual) return;
-  themeTarget = e.matches ? 'dark' : 'light';
-  document.documentElement.dataset.theme = themeTarget;
-  syncThemeColor(themeTarget);
-});
-$('#btn-theme').addEventListener('click', () => {
-  const root = document.documentElement;
-  const next = themeTarget === 'dark' ? 'light' : 'dark';
-  themeTarget = next;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const id = ++themeSwitchId;
-  const finish = () => {
-    if (id !== themeSwitchId) return;
-    root.classList.remove('theme-switching', 'theme-vt');
-  };
-
-  root.classList.add('theme-switching');
-  if (reduce || typeof document.startViewTransition !== 'function'){
-    commitTheme(root, next);
-    if (reduce){
-      finish();
-    }else{
-      requestAnimationFrame(() => requestAnimationFrame(finish));
-    }
-    return;
-  }
-
-  root.classList.add('theme-vt');
-  try{
-    const vt = document.startViewTransition(() => commitTheme(root, next));
-    vt.finished.then(finish, finish);
-  }catch(e){
-    commitTheme(root, next);
-    requestAnimationFrame(() => requestAnimationFrame(finish));
-  }
-});
+applyTheme(themeMQ.matches ? 'dark' : 'light');
+themeMQ.addEventListener?.('change', e => applyTheme(e.matches ? 'dark' : 'light'));
 
 /* ================= 站点统计：运行时长 + 加载速度 ================= */
 const SITE_BIRTH = new Date('2026-07-20T00:00:00+08:00').getTime();
@@ -1228,9 +1179,6 @@ async function refreshAll(silent, force = true, onlyLoaded = false){
   }
   silentSkips = 0;
   refreshing = true;
-  const btn = $('#btn-refresh');
-  btn.classList.add('spin');
-  btn.setAttribute('aria-busy', 'true');
   try{
     const targets = onlyLoaded
       ? SOURCES.filter(s => s._state === 'loaded' || s._state === 'error')
@@ -1255,17 +1203,13 @@ async function refreshAll(silent, force = true, onlyLoaded = false){
       }
     }
   }finally{
-    btn.classList.remove('spin');
-    btn.removeAttribute('aria-busy');
     refreshing = false;
   }
 }
-$('#btn-refresh').addEventListener('click', () => refreshAll());
 
-/* 单一定时器驱动时钟、运行时长与刷新倒计时；后台标签页跳过 DOM 写入，回前台由 visibilitychange 补刷 */
+/* 单一定时器驱动运行时长与刷新倒计时；后台标签页跳过 DOM 写入，回前台由 visibilitychange 补刷 */
 function tickSecond(){
   if (document.hidden) return;
-  tickClock();
   tickUptime();
   const left = Math.max(0, nextAt - Date.now());
   $('#cd').textContent = pad(Math.floor(left/60000)) + ':' + pad(Math.floor(left%60000/1000));

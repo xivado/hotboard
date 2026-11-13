@@ -73,32 +73,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .skip:focus{top:12px}
 
-/* 顶部燃动火线 */
-.heatline{
-  position:fixed;top:0;left:0;right:0;height:3px;z-index:200;
-  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent),var(--accent2),var(--accent));
-  background-size:300% 100%;
-  animation:heatflow 9s linear infinite;
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0;
 }
-@keyframes heatflow{to{background-position:300% 0}}
 
 .wrap{max-width:1460px;margin:0 auto;padding:0 28px}
 
-/* ============ 顶栏 ============ */
-.topbar{position:relative;padding:34px 0 20px}
-.topbar .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;position:relative;z-index:1}
-.brand{display:flex;align-items:center;gap:14px}
-.flame{width:42px;height:42px;color:var(--accent);flex:none;filter:drop-shadow(0 4px 10px var(--glow1));transform-origin:50% 100%;animation:flick 2.8s ease-in-out infinite}
-@keyframes flick{0%,100%{transform:scaleY(1) rotate(0deg)}35%{transform:scaleY(1.07) rotate(-2deg)}70%{transform:scaleY(.97) rotate(1.5deg)}}
-.brand h1{font-family:var(--font-display);font-weight:400;font-size:34px;line-height:1;letter-spacing:2px}
-.brand h1 em{font-style:normal;color:var(--accent)}
-.brand .tag{font-size:12px;color:var(--muted);letter-spacing:4px;margin-top:6px}
-.hd-right{display:flex;align-items:center;gap:18px}
-.clock{text-align:right}
-.clock .time{font-family:var(--font-mono);font-weight:700;font-size:27px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:1px}
-.clock .time i{font-style:normal;color:var(--accent);animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:.25}}
-.clock .date{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:1px}
 .iconbtn{
   width:38px;height:38px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
   border:1px solid var(--line);background:var(--card);color:var(--muted);
@@ -108,32 +89,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .iconbtn svg{width:17px;height:17px}
 .iconbtn.spin svg{animation:rot .8s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
-/* 主题切换图标 */
-.tbtn{position:relative;overflow:hidden}
-.tbtn svg{position:absolute;transition:opacity .3s ease,transform .45s cubic-bezier(.34,1.56,.64,1)}
-.tbtn .sun{opacity:0;transform:rotate(-90deg) scale(.4)}
-[data-theme="dark"] .tbtn .sun{opacity:1;transform:rotate(0) scale(1)}
-[data-theme="dark"] .tbtn .moon{opacity:0;transform:rotate(90deg) scale(.4)}
-/* 切换期间关闭逐元素过渡；View Transition 负责新旧主题交叉淡化，降级时保留图标动画 */
-html.theme-switching *,
-html.theme-switching *::before,
-html.theme-switching *::after{transition:none !important}
-html.theme-switching .tbtn svg{transition:opacity .3s ease,transform .45s cubic-bezier(.34,1.56,.64,1) !important}
-html.theme-vt .tbtn svg{transition:none !important}
-::view-transition-old(root){animation:theme-fade-out .32s cubic-bezier(.22,1,.36,1) both}
-::view-transition-new(root){animation:theme-fade-in .32s cubic-bezier(.22,1,.36,1) both}
-@keyframes theme-fade-out{to{opacity:0}}
-@keyframes theme-fade-in{from{opacity:0}}
-/* 水印大字 */
-.wm{
-  position:absolute;right:2%;top:-46px;z-index:0;pointer-events:none;user-select:none;
-  font-family:var(--font-display);font-size:215px;line-height:1;
-  color:transparent;-webkit-text-stroke:1.5px var(--wm);
-}
-
 /* ============ 控制栏 ============ */
 .controls{
-  position:sticky;top:3px;z-index:100;padding:14px 0 10px;
+  position:sticky;top:0;z-index:100;padding:14px 0 10px;
   background:color-mix(in srgb,var(--bg) 84%,transparent);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
@@ -464,12 +422,8 @@ noscript .ns{max-width:520px;margin:80px auto;text-align:center;font-size:15px;c
   .card:hover{transform:none;box-shadow:none;border-color:var(--line)}
   .rk:hover{transform:none}
 }
-@media (max-width:960px){.wm{display:none}}
 @media (max-width:860px){
   .wrap{padding:0 18px}
-  .topbar{padding:26px 0 16px}
-  .brand h1{font-size:27px}
-  .clock .time{font-size:21px}
   .search input{width:170px;font-size:16px}
   .grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
   .pmeta p{flex-wrap:wrap;white-space:normal;row-gap:1px}
@@ -480,15 +434,6 @@ noscript .ns{max-width:520px;margin:80px auto;text-align:center;font-size:15px;c
 @media (max-width:560px){
   .wrap{padding:0 14px}
   body{font-size:13.5px}
-  .topbar{padding:20px 0 14px}
-  .topbar .wrap{flex-wrap:wrap;gap:12px}
-  .flame{width:34px;height:34px}
-  .brand{gap:10px}
-  .brand h1{font-size:24px;letter-spacing:1px}
-  .brand .tag{letter-spacing:2px;margin-top:4px}
-  .hd-right{margin-left:auto;gap:10px}
-  .clock .time{font-size:17px}
-  .clock .date{display:none}
   .iconbtn{width:44px;height:44px}
   .controls{padding:10px 0 8px}
   .controls .wrap{gap:10px}
