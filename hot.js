@@ -488,7 +488,6 @@ function trimCollapsedLists(){
   });
 }
 function renderCardData(src, el, items, ts){
-  src._top = { title: items[0].title, url: items[0].url, char: src.char, color: src.color };
   src._count = items.length;
   src._dataTs = ts;
   renderItems(src, el, items);
@@ -801,15 +800,12 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
     src._hydrated = false;
     src._count = 0;
     src._dataTs = 0;
-    src._top = null;
-    scheduleTicker();
   }
   let cached = readCache(src);
   if (cached){
     try{
       if (!(await renderIfCurrent(src, seq))) return { ok:false, superseded:true };
       renderCardData(src, el, cached.items, cached.t);
-      scheduleTicker();
       if (!force && Date.now() - cached.t < REFRESH_MS){
         btn.classList.remove('spin');
         if (qInput.value.trim()) scheduleSearch();
@@ -831,7 +827,6 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
     writeCache(src, items);
     if (!(await renderIfCurrent(src, seq))) return { ok:false, superseded:true };
     renderCardData(src, el, items, Date.now());
-    scheduleTicker();
     if (qInput.value.trim()) scheduleSearch();
     return { ok:true, shown:true, count:items.length };
   }catch(e){
@@ -845,7 +840,6 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
       const ptime = el.querySelector('.ptime');
       ptime.textContent = (cached ? '缓存 · ' : '上次数据 · ') + fmtStamp(fallback.t);
       ptime.title = `网络刷新失败（${reason}），显示${cached ? '缓存数据' : '上次成功数据'}`;
-      scheduleTicker();
       if (qInput.value.trim()) scheduleSearch();
       return { ok:false, shown:true, stale:true, reason };
     }
@@ -853,8 +847,6 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
     body.innerHTML = `<div class="card-err"><p>${esc(friendlyError(reason))}<span class="err-detail">${esc(reason)}</span></p><button class="retry">重新加载</button></div>`;
     el.querySelector('.ptime').textContent = '加载失败';
     el.querySelector('.ptime').title = reason;
-    src._top = null;
-    scheduleTicker();
     body.querySelector('.retry').addEventListener('click', () => enqueueLoad(src, el, { force:true }));
     return { ok:false, shown:false, reason };
   }finally{
@@ -1223,68 +1215,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ================= 滚动播报 ================= */
-let tickerTimer = null;
-let tickerIdle = 0;
-let tickerIntroduced = false;
-function scheduleTicker(){
-  if (tickerTimer || tickerIdle) return;
-  tickerTimer = setTimeout(() => {
-    tickerTimer = null;
-    if ('requestIdleCallback' in window){
-      tickerIdle = requestIdleCallback(() => {
-        tickerIdle = 0;
-        buildTicker();
-      }, { timeout: 1000 });
-    }else{
-      buildTicker();
-    }
-  }, 300);
-}
-function buildTicker(){
-  const tops = SOURCES.filter(s => s._top);
-  const track = $('#tk-track');
-  if (!tops.length){
-    track.innerHTML = '<span class="tk-empty">正在汇聚全网热点…</span>';
-    track.style.removeProperty('--dur');
-    return;
-  }
-  const html = tops.map(s => {
-    const icon = iconURL(s.id);
-    return `<a class="tk" href="${esc(safeURL(s._top.url))}" target="_blank" rel="noopener noreferrer"><i class="${icon ? '' : 'noicon'}" style="--pc:${esc(s.color)}">${icon ? `<img src="${esc(icon)}" alt="" loading="lazy">` : ''}<b>${esc(s._top.char)}</b></i>${esc(s._top.title)}</a>`;
-  }).join('');
-  track.style.setProperty('--dur', Math.max(60, tops.length * 5) + 's');
-  if (!tickerIntroduced){
-    tickerIntroduced = true;
-    const bar = track.closest('.ticker');
-    if (bar){
-      bar.classList.add('tk-enter');
-      setTimeout(() => bar.classList.remove('tk-enter'), 700);
-    }
-  }
-  track.innerHTML = `<div class="tk-group">${html}</div><div class="tk-group" aria-hidden="true">${html}</div>`;
-  track.querySelectorAll('.tk i img').forEach(img => watchIconFallback(img, img.parentElement));
-}
-const tkView = document.querySelector('.tk-view');
-if (tkView){
-  let tkResume = 0;
-  const pauseTicker = () => {
-    clearTimeout(tkResume);
-    const track = $('#tk-track');
-    if (track) track.style.animationPlayState = 'paused';
-  };
-  const resumeTicker = () => {
-    clearTimeout(tkResume);
-    tkResume = setTimeout(() => {
-      const track = $('#tk-track');
-      if (track) track.style.animationPlayState = '';
-    }, 2500);
-  };
-  tkView.addEventListener('touchstart', pauseTicker, { passive:true });
-  tkView.addEventListener('touchend', resumeTicker, { passive:true });
-  tkView.addEventListener('touchcancel', resumeTicker, { passive:true });
-}
-
 /* ================= 加载与自动刷新 ================= */
 let nextAt = Date.now() + REFRESH_MS;
 let refreshing = false;
@@ -1315,7 +1245,6 @@ async function refreshAll(silent, force = true, onlyLoaded = false){
     const results = await Promise.all(ordered.map(src => enqueueLoad(src, cardMap.get(src.id), { force })));
     const failedPairs = results.map((r, i) => ({ r, src: ordered[i] })).filter(x => x.r && !x.r.ok && !x.r.superseded);
     const okCount = results.filter(r => r?.ok).length;
-    buildTicker();
     nextAt = Date.now() + REFRESH_MS;
     if (!silent){
       const time = new Date().toTimeString().slice(0,5);
