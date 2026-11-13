@@ -67,7 +67,7 @@ const sources = [...sourcesBlock.matchAll(/\{\s*id:'([^']+)'([^\n]*)\}/g)].map(m
   regions: m[2].match(/regions:(X_REGIONS|APP_REGIONS)/)?.[1] || '',
   region: m[2].match(/region:'([^']+)'/)?.[1] || '',
 }));
-check('榜单数量为 46', sources.length === 46, `榜单数量 ${sources.length}`);
+check('榜单数量为 44', sources.length === 44, `榜单数量 ${sources.length}`);
 check('榜单 id 唯一', new Set(sources.map(s => s.id)).size === sources.length);
 check('所有分类都在 CATS 中', sources.every(s => catIds.includes(s.cat)), sources.filter(s => !catIds.includes(s.cat)).map(s => s.id).join(','));
 

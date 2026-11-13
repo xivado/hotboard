@@ -113,9 +113,7 @@ const APP_REGIONS = [
 const SOURCES = [
   { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
   { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    cid:'mproPpoq6O',        home:'https://www.zhihu.com/hot' },
-  { id:'baidu',      cat:'hot',    name:'百度热点',      char:'百', color:'#2932e1', sub:'实时热点榜',           cid:'Jb0vmloB1G',        home:'https://top.baidu.com/board?tab=realtime' },
   { id:'toutiao',    cat:'hot',    name:'头条热榜',      char:'头', color:'#f85959', sub:'信息创造价值',         cid:'toutiao', home:'https://www.toutiao.com/' },
-  { id:'wechat',     cat:'hot',    name:'微信热文',      char:'信', color:'#07c160', sub:'24h 热门公众号文章',   cid:'WnBe01o371',                     home:'https://weixin.qq.com/' },
   { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'好文 · 好价榜',        cid:'K7GdagpoQy',                     home:'https://www.smzdm.com/' },
   { id:'tieba',      cat:'hot',    name:'百度贴吧',      char:'贴', color:'#3085d6', sub:'热议话题榜',           cid:'Om4ejxvxEN',        home:'https://tieba.baidu.com/' },
   { id:'sinahot',    cat:'hot',    name:'新浪热榜',      char:'新', color:'#f6842e', sub:'实时热点榜',           api:'sina-hot',                        home:'https://news.sina.com.cn/' },
@@ -163,8 +161,8 @@ const SOURCES = [
 
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
 const ICONS = {
-  weibo:'weibo.svg',       zhihu:'zhihu.png',       baidu:'baidu.png',       toutiao:'toutiao.png',
-  wechat:'wechat.svg',     smzdm:'smzdm.jpg',       tieba:'tieba.jpg',       github:'github.png',
+  weibo:'weibo.svg',       zhihu:'zhihu.png',       toutiao:'toutiao.png',
+  smzdm:'smzdm.jpg',       tieba:'tieba.jpg',       github:'github.png',
   juejin:'juejin.svg',     sspai:'sspai.png',       ithome:'ithome.png',     kr36:'kr36.jpg',
   csdn:'csdn.svg',         zcool:'zcool.svg',       phunt:'phunt.svg',       appstore:'appstore.png',
   hackernews:'hackernews.ico', devto:'devto.svg',   txnews:'txnews.png',     sina:'sina.png',
