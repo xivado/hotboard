@@ -21,8 +21,6 @@ const SOURCES = [
   { id:'nyt',        cat:'global', name:'纽约时报',      char:'NYT', color:'#000000', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', home:'https://www.nytimes.com/section/world' },
   { id:'guardian',   cat:'global', name:'卫报',          char:'卫',  color:'#052962', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://www.theguardian.com/world/rss', home:'https://www.theguardian.com/world' },
   { id:'aljazeera',  cat:'global', name:'半岛电视台',    char:'半',  color:'#f7a800', sub:'国际新闻头条',         api:'rss', nohot:true, feed:'https://www.aljazeera.com/xml/rss/all.xml', home:'https://www.aljazeera.com/' },
-  { id:'npr',        cat:'global', name:'NPR',           char:'NPR', color:'#d71920', sub:'Top Stories 头条新闻', api:'rss', nohot:true, feed:'https://feeds.npr.org/1001/rss.xml', home:'https://www.npr.org/sections/news/' },
-  { id:'dw',         cat:'global', name:'德国之声',      char:'DW',  color:'#0091d5', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://rss.dw.com/rdf/rss-en-world', home:'https://www.dw.com/en/world/s-1429' },
 ];
 
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
@@ -31,7 +29,6 @@ const ICONS = {
   netease:'netease.jpg',      sspai:'sspai.png',          csdn:'csdn.svg',
   zcool:'zcool.svg',          huxiu:'huxiu.jpg',          bbc:'bbc.svg',
   nyt:'newyorktimes.svg',     guardian:'theguardian.svg', aljazeera:'aljazeera.png',
-  npr:'npr.png',              dw:'dw.png',
 };
 const iconURL = id => ICONS[id] ? `icons/${ICONS[id]}` : '';
 
