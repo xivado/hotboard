@@ -70,67 +70,18 @@ const X_REGIONS = [
   { id:'ukraine', name:'乌克兰' },
   { id:'venezuela', name:'委内瑞拉' },
 ];
-/* App Store 可选地区：id 为 Apple 商店国家/地区代码 */
-const APP_REGIONS = [
-  { id:'cn', name:'中国大陆' },
-  { id:'hk', name:'中国香港' },
-  { id:'tw', name:'中国台湾' },
-  { id:'us', name:'美国' },
-  { id:'jp', name:'日本' },
-  { id:'kr', name:'韩国' },
-  { id:'gb', name:'英国' },
-  { id:'ca', name:'加拿大' },
-  { id:'au', name:'澳大利亚' },
-  { id:'sg', name:'新加坡' },
-  { id:'my', name:'马来西亚' },
-  { id:'th', name:'泰国' },
-  { id:'vn', name:'越南' },
-  { id:'ph', name:'菲律宾' },
-  { id:'id', name:'印度尼西亚' },
-  { id:'in', name:'印度' },
-  { id:'de', name:'德国' },
-  { id:'fr', name:'法国' },
-  { id:'it', name:'意大利' },
-  { id:'es', name:'西班牙' },
-  { id:'nl', name:'荷兰' },
-  { id:'se', name:'瑞典' },
-  { id:'no', name:'挪威' },
-  { id:'dk', name:'丹麦' },
-  { id:'fi', name:'芬兰' },
-  { id:'pl', name:'波兰' },
-  { id:'tr', name:'土耳其' },
-  { id:'ru', name:'俄罗斯' },
-  { id:'br', name:'巴西' },
-  { id:'mx', name:'墨西哥' },
-  { id:'ar', name:'阿根廷' },
-  { id:'za', name:'南非' },
-  { id:'ae', name:'阿联酋' },
-  { id:'sa', name:'沙特阿拉伯' },
-];
 /* cid = codelife 榜单 ID；api = 自定义官方接口；feed = RSS 地址；nohot = 热度值无意义时不显示；home = 官方热榜页 */
 const SOURCES = [
   { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
   { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    cid:'mproPpoq6O',        home:'https://www.zhihu.com/hot' },
-  { id:'toutiao',    cat:'hot',    name:'头条热榜',      char:'头', color:'#f85959', sub:'信息创造价值',         cid:'toutiao', home:'https://www.toutiao.com/' },
   { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'好文 · 好价榜',        cid:'K7GdagpoQy',                     home:'https://www.smzdm.com/' },
-  { id:'tieba',      cat:'hot',    name:'百度贴吧',      char:'贴', color:'#3085d6', sub:'热议话题榜',           cid:'Om4ejxvxEN',        home:'https://tieba.baidu.com/' },
-  { id:'sinahot',    cat:'hot',    name:'新浪热榜',      char:'新', color:'#f6842e', sub:'实时热点榜',           api:'sina-hot',                        home:'https://news.sina.com.cn/' },
   { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease', nohot:true,            home:'https://news.163.com/' },
   { id:'github',     cat:'tech',   name:'GitHub 趋势',   char:'G',  color:'#8250df', sub:'Trending Today',      cid:'rYqoXQ8vOD',       home:'https://github.com/trending' },
-  { id:'juejin',     cat:'tech',   name:'掘金',          char:'掘', color:'#1e80ff', sub:'本周最热技术文章',     cid:'QaqeEaVe9R',       home:'https://juejin.cn/hot' },
   { id:'sspai',      cat:'tech',   name:'少数派',        char:'少', color:'#e64552', sub:'高质量数字消费指南',   cid:'Y2KeDGQdNP',   home:'https://sspai.com/' },
-  { id:'ithome',     cat:'tech',   name:'IT之家',        char:'IT', color:'#d22222', sub:'科技资讯日榜',         cid:'74Kvx59dkx',                     home:'https://www.ithome.com/' },
-  { id:'kr36',       cat:'tech',   name:'36氪',          char:'36', color:'#0068ff', sub:'24 小时热榜',          cid:'Q1Vd5Ko85R',         home:'https://36kr.com/hot-list/catalog' },
   { id:'csdn',       cat:'tech',   name:'CSDN',          char:'C',  color:'#fc5531', sub:'综合热榜',             cid:'DgeyrgMoZq',                     home:'https://blog.csdn.net/rank/list' },
   { id:'zcool',      cat:'tech',   name:'站酷',          char:'酷', color:'#e07b00', sub:'热门设计作品榜',       cid:'VaobJ88oAj',                     home:'https://www.zcool.com.cn/' },
   { id:'huxiu',      cat:'tech',   name:'虎嗅',          char:'虎', color:'#d0021b', sub:'24小时热文',           cid:'5VaobgvAj1',                     home:'https://www.huxiu.com/' },
-  { id:'oschina',    cat:'tech',   name:'开源中国',      char:'开', color:'#00a062', sub:'热门资讯',             cid:'rYqoXZzdOD', nohot:true,         home:'https://www.oschina.net/' },
-  { id:'renren',     cat:'tech',   name:'人人都是产品经理', char:'人', color:'#1e88e5', sub:'热门文章榜',         cid:'20MdKx4ew1', nohot:true,         home:'https://www.woshipm.com/' },
   /* 海外视野：境外平台，经公开接口或代理获取数据 */
-  { id:'phunt',      cat:'global', name:'Product Hunt',  char:'P',  color:'#da552f', sub:'今日新品榜',           cid:'LBwdG0jePx', nohot:true,         home:'https://www.producthunt.com/' },
-  { id:'appstore',   cat:'global', name:'App Store',     char:'A',  color:'#0d96f6', sub:'热门免费应用榜',       api:'appstore', region:'us', regions:APP_REGIONS, nohot:true, home:'https://apps.apple.com/us/charts/iphone' },
-  { id:'hackernews', cat:'global', name:'Hacker News',   char:'HN', color:'#ff6600', sub:'Front Page 首页',      api:'hn',                             home:'https://news.ycombinator.com/' },
-  { id:'devto',      cat:'global', name:'dev.to',        char:'D',  color:'#3b49df', sub:'本周热门文章',         api:'devto',                          home:'https://dev.to/' },
   { id:'x',          cat:'global', name:'X 趋势',        char:'X',  color:'#0f1419', sub:'全球实时趋势',         api:'x', region:'united-states', regions:X_REGIONS, home:'https://x.com/explore' },
   /* 海外媒体：经 Redocly 代理读取官方 RSS，按发布时间展示 */
   { id:'bbc',        cat:'global', name:'BBC 新闻',      char:'BBC', color:'#bb1919', sub:'World News 国际新闻',  api:'rss', nohot:true, feed:'https://feeds.bbci.co.uk/news/world/rss.xml', home:'https://www.bbc.com/news/world' },
@@ -143,15 +94,11 @@ const SOURCES = [
 
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
 const ICONS = {
-  weibo:'weibo.svg',           zhihu:'zhihu.png',           toutiao:'toutiao.png',
-  smzdm:'smzdm.jpg',           tieba:'tieba.jpg',           sinahot:'sinahot.jpg',
-  netease:'netease.jpg',       github:'github.png',         juejin:'juejin.svg',
-  sspai:'sspai.png',           ithome:'ithome.png',         kr36:'kr36.jpg',
-  csdn:'csdn.svg',             zcool:'zcool.svg',           huxiu:'huxiu.jpg',
-  oschina:'oschina.jpg',       renren:'renren.jpg',         phunt:'phunt.svg',
-  appstore:'appstore.png',     hackernews:'hackernews.ico', devto:'devto.svg',
-  x:'x.svg',                   bbc:'bbc.svg',               nyt:'newyorktimes.svg',
-  guardian:'theguardian.svg',  aljazeera:'aljazeera.png',   npr:'npr.png',
+  weibo:'weibo.svg',          zhihu:'zhihu.png',          smzdm:'smzdm.jpg',
+  netease:'netease.jpg',      github:'github.png',        sspai:'sspai.png',
+  csdn:'csdn.svg',            zcool:'zcool.svg',          huxiu:'huxiu.jpg',
+  x:'x.svg',                  bbc:'bbc.svg',              nyt:'newyorktimes.svg',
+  guardian:'theguardian.svg', aljazeera:'aljazeera.png',  npr:'npr.png',
   dw:'dw.png',
 };
 const iconURL = id => ICONS[id] ? `icons/${ICONS[id]}` : '';
@@ -169,22 +116,8 @@ const FAIL_ALERT_MIN = 3;        /* 失败提示条显示的失败数阈值 */
 
 /* 时间戳绕过 CDN 缓存，减少榜单滞后 */
 const API_CODELIFE = id => `https://api.codelife.cc/api/top/list?lang=cn&id=${encodeURIComponent(id)}&_=${Date.now()}`;
-const API_HN       = 'https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=20';
-const API_DEVTO    = 'https://dev.to/api/articles?top=7&per_page=20';
 /* X 官方未提供浏览器可用的趋势接口，读取 getdaytrends 的全球/各地区趋势页 */
 const API_X          = 'https://cors.redoc.ly/https://getdaytrends.com/';
-/* App Store 分区免费榜：iTunes RSS 未开放 CORS，经 Redocly 代理读取 */
-const API_ITUNES     = cc => `https://cors.redoc.ly/https://itunes.apple.com/${encodeURIComponent(cc)}/rss/topfreeapplications/limit=${SHOW}/json`;
-/* 综合热榜：读取平台公开榜单接口，经 Redocly 代理 */
-function sinaDay(d = new Date()){
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Shanghai', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(d);
-  const pick = type => parts.find(p => p.type === type)?.value || '';
-  return pick('year') + pick('month') + pick('day');
-}
-const API_SINA_HOT   = () => {
-  const day = sinaDay();
-  return `https://cors.redoc.ly/https://top.news.sina.com.cn/ws/GetTopDataList.php?top_type=day&top_cat=www_www_all_suda_suda&top_time=${day}&top_show_num=50&top_order=DESC&js_var=all_1_data`;
-};
 const API_NETEASE    = 'https://cors.redoc.ly/https://m.163.com/fe/api/hot/news/flow';
 
 /* ================= 工具 ================= */
@@ -534,30 +467,6 @@ async function loadX(src, signal){
   if (items.length) return items;
   throw new Error('X 趋势数据异常');
 }
-async function loadAppStore(src, signal){
-  const j = await getJSON(API_ITUNES(src.region || 'us'), 20000, signal);
-  const entries = j?.feed?.entry;
-  if (Array.isArray(entries) && entries.length){
-    return entries.map(e => {
-      const links = Array.isArray(e.link) ? e.link : [e.link];
-      const alt = links.find(l => l?.attributes?.rel === 'alternate') || links[0];
-      return {
-        title: e['im:name']?.label || '',
-        url: e.id?.label || alt?.attributes?.href || '',
-      };
-    }).filter(it => it.title && it.url).slice(0, SHOW);
-  }
-  throw new Error('App Store 数据异常');
-}
-async function loadSinaHot(_src, signal){
-  const txt = await getText(API_SINA_HOT(), 18000, 'application/javascript, application/json, text/plain, */*', signal);
-  const start = txt.indexOf('{'), end = txt.lastIndexOf('}');
-  if (start < 0 || end <= start) throw new Error('新浪热榜数据异常');
-  const j = JSON.parse(txt.slice(start, end + 1));
-  const items = (j.data || []).map(it => ({ title: it.title, hot: it.top_num, url: it.url })).filter(it => it.title && it.url);
-  if (items.length) return items.slice(0, 30);
-  throw new Error('新浪热榜数据异常');
-}
 async function loadNeteaseHot(_src, signal){
   const j = await getJSON(API_NETEASE, 18000, signal);
   const list = j?.data?.list;
@@ -582,28 +491,10 @@ async function loadRSS(src, signal){
   if (items.length) return items;
   throw new Error('新闻 RSS 数据异常');
 }
-async function loadHN(_src, signal){
-  const j = await getJSON(API_HN, 12000, signal);
-  if (j && Array.isArray(j.hits) && j.hits.length){
-    return j.hits.map(h => ({ title: h.title, hot: h.points, url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}` }));
-  }
-  throw new Error('Hacker News 数据异常');
-}
-async function loadDevto(_src, signal){
-  const j = await getJSON(API_DEVTO, 12000, signal);
-  if (Array.isArray(j) && j.length){
-    return j.map(a => ({ title: a.title, hot: a.positive_reactions_count, url: a.url || 'https://dev.to' + a.path }));
-  }
-  throw new Error('dev.to 数据异常');
-}
 const LOADERS = {
-  'sina-hot': loadSinaHot,
   netease: loadNeteaseHot,
   rss: loadRSS,
   x: loadX,
-  appstore: loadAppStore,
-  hn: loadHN,
-  devto: loadDevto,
 };
 function validateSources(){
   const seen = new Set();

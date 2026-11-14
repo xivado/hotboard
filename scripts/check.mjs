@@ -67,11 +67,11 @@ const sources = [...sourcesBlock.matchAll(/\{\s*id:'([^']+)'([^\n]*)\}/g)].map(m
   regions: m[2].match(/regions:(X_REGIONS|APP_REGIONS)/)?.[1] || '',
   region: m[2].match(/region:'([^']+)'/)?.[1] || '',
 }));
-check('榜单数量为 28', sources.length === 28, `榜单数量 ${sources.length}`);
+check('榜单数量为 16', sources.length === 16, `榜单数量 ${sources.length}`);
 check('榜单 id 唯一', new Set(sources.map(s => s.id)).size === sources.length);
 check('所有分类都在 CATS 中', sources.every(s => catIds.includes(s.cat)), sources.filter(s => !catIds.includes(s.cat)).map(s => s.id).join(','));
 
-const allowedApis = new Set(['sina-hot', 'netease', 'rss', 'x', 'appstore', 'hn', 'devto']);
+const allowedApis = new Set(['netease', 'rss', 'x']);
 const badSources = sources.filter(s => {
   if (!s.cid && !s.api) return true;
   if (s.api && !allowedApis.has(s.api)) return true;
@@ -82,7 +82,7 @@ const badSources = sources.filter(s => {
 check('榜单数据源配置完整', badSources.length === 0, badSources.map(s => s.id).join(','));
 
 const regionIds = block => [...(js.match(new RegExp(`const ${block} = \\[([\\s\\S]*?)\\n\\];`))?.[1] || '').matchAll(/id:'([^']+)'/g)].map(m => m[1]);
-const regionSets = { X_REGIONS: regionIds('X_REGIONS'), APP_REGIONS: regionIds('APP_REGIONS') };
+const regionSets = { X_REGIONS: regionIds('X_REGIONS') };
 const badRegions = sources.filter(s => s.regions && !regionSets[s.regions].includes(s.region));
 check('默认地区存在于地区列表', badRegions.length === 0, badRegions.map(s => s.id).join(','));
 
