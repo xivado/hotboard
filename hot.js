@@ -4,85 +4,18 @@ const CATS = [
   { id:'tech',   name:'科技开发', en:'TECH & DEV' },
   { id:'global', name:'海外视野', en:'GLOBAL' },
 ];
-/* X 趋势可选地区：id 对应 getdaytrends 的国家/地区页 */
-const X_REGIONS = [
-  { id:'worldwide', name:'全球' },
-  { id:'united-states', name:'美国' },
-  { id:'japan', name:'日本' },
-  { id:'korea', name:'韩国' },
-  { id:'united-kingdom', name:'英国' },
-  { id:'france', name:'法国' },
-  { id:'germany', name:'德国' },
-  { id:'canada', name:'加拿大' },
-  { id:'australia', name:'澳大利亚' },
-  { id:'india', name:'印度' },
-  { id:'singapore', name:'新加坡' },
-  { id:'malaysia', name:'马来西亚' },
-  { id:'thailand', name:'泰国' },
-  { id:'vietnam', name:'越南' },
-  { id:'philippines', name:'菲律宾' },
-  { id:'indonesia', name:'印度尼西亚' },
-  { id:'brazil', name:'巴西' },
-  { id:'mexico', name:'墨西哥' },
-  { id:'spain', name:'西班牙' },
-  { id:'italy', name:'意大利' },
-  { id:'netherlands', name:'荷兰' },
-  { id:'turkey', name:'土耳其' },
-  { id:'russia', name:'俄罗斯' },
-  { id:'saudi-arabia', name:'沙特阿拉伯' },
-  { id:'united-arab-emirates', name:'阿联酋' },
-  { id:'south-africa', name:'南非' },
-  { id:'nigeria', name:'尼日利亚' },
-  { id:'pakistan', name:'巴基斯坦' },
-  { id:'argentina', name:'阿根廷' },
-  { id:'algeria', name:'阿尔及利亚' },
-  { id:'austria', name:'奥地利' },
-  { id:'bahrain', name:'巴林' },
-  { id:'belarus', name:'白俄罗斯' },
-  { id:'belgium', name:'比利时' },
-  { id:'chile', name:'智利' },
-  { id:'colombia', name:'哥伦比亚' },
-  { id:'denmark', name:'丹麦' },
-  { id:'dominican-republic', name:'多米尼加' },
-  { id:'ecuador', name:'厄瓜多尔' },
-  { id:'egypt', name:'埃及' },
-  { id:'ghana', name:'加纳' },
-  { id:'greece', name:'希腊' },
-  { id:'guatemala', name:'危地马拉' },
-  { id:'ireland', name:'爱尔兰' },
-  { id:'israel', name:'以色列' },
-  { id:'jordan', name:'约旦' },
-  { id:'kenya', name:'肯尼亚' },
-  { id:'kuwait', name:'科威特' },
-  { id:'latvia', name:'拉脱维亚' },
-  { id:'lebanon', name:'黎巴嫩' },
-  { id:'new-zealand', name:'新西兰' },
-  { id:'norway', name:'挪威' },
-  { id:'oman', name:'阿曼' },
-  { id:'panama', name:'巴拿马' },
-  { id:'peru', name:'秘鲁' },
-  { id:'poland', name:'波兰' },
-  { id:'portugal', name:'葡萄牙' },
-  { id:'puerto-rico', name:'波多黎各' },
-  { id:'qatar', name:'卡塔尔' },
-  { id:'sweden', name:'瑞典' },
-  { id:'switzerland', name:'瑞士' },
-  { id:'ukraine', name:'乌克兰' },
-  { id:'venezuela', name:'委内瑞拉' },
-];
+
 /* cid = codelife 榜单 ID；api = 自定义官方接口；feed = RSS 地址；nohot = 热度值无意义时不显示；home = 官方热榜页 */
 const SOURCES = [
   { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
   { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    cid:'mproPpoq6O',        home:'https://www.zhihu.com/hot' },
   { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'好文 · 好价榜',        cid:'K7GdagpoQy',                     home:'https://www.smzdm.com/' },
   { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease', nohot:true,            home:'https://news.163.com/' },
-  { id:'github',     cat:'tech',   name:'GitHub 趋势',   char:'G',  color:'#8250df', sub:'Trending Today',      cid:'rYqoXQ8vOD',       home:'https://github.com/trending' },
   { id:'sspai',      cat:'tech',   name:'少数派',        char:'少', color:'#e64552', sub:'高质量数字消费指南',   cid:'Y2KeDGQdNP',   home:'https://sspai.com/' },
   { id:'csdn',       cat:'tech',   name:'CSDN',          char:'C',  color:'#fc5531', sub:'综合热榜',             cid:'DgeyrgMoZq',                     home:'https://blog.csdn.net/rank/list' },
   { id:'zcool',      cat:'tech',   name:'站酷',          char:'酷', color:'#e07b00', sub:'热门设计作品榜',       cid:'VaobJ88oAj',                     home:'https://www.zcool.com.cn/' },
   { id:'huxiu',      cat:'tech',   name:'虎嗅',          char:'虎', color:'#d0021b', sub:'24小时热文',           cid:'5VaobgvAj1',                     home:'https://www.huxiu.com/' },
   /* 海外视野：境外平台，经公开接口或代理获取数据 */
-  { id:'x',          cat:'global', name:'X 趋势',        char:'X',  color:'#0f1419', sub:'全球实时趋势',         api:'x', region:'united-states', regions:X_REGIONS, home:'https://x.com/explore' },
   /* 海外媒体：经 Redocly 代理读取官方 RSS，按发布时间展示 */
   { id:'bbc',        cat:'global', name:'BBC 新闻',      char:'BBC', color:'#bb1919', sub:'World News 国际新闻',  api:'rss', nohot:true, feed:'https://feeds.bbci.co.uk/news/world/rss.xml', home:'https://www.bbc.com/news/world' },
   { id:'nyt',        cat:'global', name:'纽约时报',      char:'NYT', color:'#000000', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', home:'https://www.nytimes.com/section/world' },
@@ -95,11 +28,10 @@ const SOURCES = [
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
 const ICONS = {
   weibo:'weibo.svg',          zhihu:'zhihu.png',          smzdm:'smzdm.jpg',
-  netease:'netease.jpg',      github:'github.png',        sspai:'sspai.png',
-  csdn:'csdn.svg',            zcool:'zcool.svg',          huxiu:'huxiu.jpg',
-  x:'x.svg',                  bbc:'bbc.svg',              nyt:'newyorktimes.svg',
-  guardian:'theguardian.svg', aljazeera:'aljazeera.png',  npr:'npr.png',
-  dw:'dw.png',
+  netease:'netease.jpg',      sspai:'sspai.png',          csdn:'csdn.svg',
+  zcool:'zcool.svg',          huxiu:'huxiu.jpg',          bbc:'bbc.svg',
+  nyt:'newyorktimes.svg',     guardian:'theguardian.svg', aljazeera:'aljazeera.png',
+  npr:'npr.png',              dw:'dw.png',
 };
 const iconURL = id => ICONS[id] ? `icons/${ICONS[id]}` : '';
 
@@ -110,14 +42,11 @@ const LOAD_CONCURRENCY = 6;
 const CACHE_PREFIX = 'hotboard-cache-v1:';
 const SEARCH_DEBOUNCE_MS = 120;  /* 搜索输入防抖 */
 const SCROLL_THROTTLE_MS = 150;  /* 滚动兜底加载节流 */
-const REGION_DEBOUNCE_MS = 350;  /* 地区切换刷新去抖 */
 const VIEWPORT_MARGIN = 600;     /* 视口预加载边距 */
 const FAIL_ALERT_MIN = 3;        /* 失败提示条显示的失败数阈值 */
 
 /* 时间戳绕过 CDN 缓存，减少榜单滞后 */
 const API_CODELIFE = id => `https://api.codelife.cc/api/top/list?lang=cn&id=${encodeURIComponent(id)}&_=${Date.now()}`;
-/* X 官方未提供浏览器可用的趋势接口，读取 getdaytrends 的全球/各地区趋势页 */
-const API_X          = 'https://cors.redoc.ly/https://getdaytrends.com/';
 const API_NETEASE    = 'https://cors.redoc.ly/https://m.163.com/fe/api/hot/news/flow';
 
 /* ================= 工具 ================= */
@@ -166,7 +95,7 @@ function fmtStamp(ts){
   return sameDay ? fmtTime(ts) : `${d.getMonth()+1}/${d.getDate()} ${fmtTime(ts)}`;
 }
 function cacheKey(src){
-  return CACHE_PREFIX + src.id + (src.region ? ':' + src.region : '');
+  return CACHE_PREFIX + src.id;
 }
 function readCache(src){
   try{
@@ -333,7 +262,7 @@ function trimList(src, el){
   ol.classList.add('collapsed');
   const ft = el.querySelector('.card-ft');
   const more = el.querySelector('.more');
-  if (ft && !el.classList.contains('has-region')) ft.hidden = false;
+  if (ft) ft.hidden = false;
   if (more){
     more.textContent = `展开全部（共 ${src._count} 条）`;
     more.setAttribute('aria-expanded', 'false');
@@ -358,26 +287,11 @@ function renderCardData(src, el, items, ts){
       more.setAttribute('aria-expanded', String(src._expanded));
     }
   }else{
-    ft.hidden = !src.regions;
+    ft.hidden = true;
   }
   const ptime = el.querySelector('.ptime');
   ptime.textContent = '抓取于 ' + fmtStamp(ts);
   ptime.title = src.api ? '抓取时间' : '抓取时间；数据来自 Codelife 第三方聚合，可能滞后官方';
-}
-function regionName(src){
-  return (src.regions || []).find(r => r.id === src.region)?.name || '';
-}
-function sourceHome(src){
-  if (src.api === 'appstore') return `https://apps.apple.com/${src.region}/charts/iphone`;
-  return src.home;
-}
-function sourceSub(src){
-  if (src.api === 'x'){
-    const name = regionName(src);
-    return name === '全球' ? '全球实时趋势' : `${name}实时趋势`;
-  }
-  if (src.api === 'appstore') return `热门免费应用 · ${regionName(src)}`;
-  return src.sub;
 }
 function buildCard(src){
   const el = document.createElement('article');
@@ -387,21 +301,6 @@ function buildCard(src){
   if (!src._state) src._state = 'idle';
   const small = src.char.length > 1 ? ' small' : '';
   const icon = iconURL(src.id);
-  const regionPicker = src.regions ? `
-    <footer class="card-ft region">
-      <label class="region-pick">
-        <span class="region-cap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.7 4 5.7 4 9s-1.2 6.3-4 9c-2.8-2.7-4-5.7-4-9s1.2-6.3 4-9z"/></svg>
-          地区
-        </span>
-        <span class="region-box">
-          <select class="region-select" aria-label="选择${esc(src.name)}的国家或地区">
-            ${src.regions.map(r => `<option value="${esc(r.id)}"${r.id === src.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}
-          </select>
-          <svg class="region-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </span>
-      </label>
-    </footer>` : '';
   el.innerHTML = `
     <header class="card-hd">
       <span class="pbadge${small}" style="--pc:${esc(src.color)}">
@@ -409,15 +308,15 @@ function buildCard(src){
         <b>${esc(src.char)}</b>
       </span>
       <div class="pmeta">
-        <h3><a href="${esc(sourceHome(src))}" target="_blank" rel="noopener noreferrer" title="访问「${esc(src.name)}」官方榜单">${esc(src.name)}<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></h3>
-        <p><span class="psub">${esc(sourceSub(src))}</span><span class="ptime">加载中…</span>${src.api ? '' : '<span class="src-tag" title="数据来自 Codelife 第三方聚合，可能滞后官方">第三方</span>'}</p>
+        <h3><a href="${esc(src.home)}" target="_blank" rel="noopener noreferrer" title="访问「${esc(src.name)}」官方榜单">${esc(src.name)}<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a></h3>
+        <p><span class="psub">${esc(src.sub)}</span><span class="ptime">加载中…</span>${src.api ? '' : '<span class="src-tag" title="数据来自 Codelife 第三方聚合，可能滞后官方">第三方</span>'}</p>
       </div>
       <button class="iconbtn card-refresh" aria-label="刷新${esc(src.name)}" title="刷新本榜">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 0 1-15.357-2m15.357 2H15"/></svg>
       </button>
     </header>
     <div class="card-bd">${skeleton()}</div>
-    ${regionPicker || '<footer class="card-ft" hidden><button class="more" aria-expanded="false"></button></footer>'}`;
+    <footer class="card-ft" hidden><button class="more" aria-expanded="false"></button></footer>`;
   const badge = el.querySelector('.pbadge');
   if (!icon) badge.classList.add('noicon');
   else watchIconFallback(badge.querySelector('img'), badge);
@@ -434,38 +333,8 @@ function buildCard(src){
     else if (collapsed) trimList(src, el);
     else this.textContent = '收起榜单';
   });
-  const regionSelect = el.querySelector('.region-select');
-  if (regionSelect){
-    el.classList.add('has-region');
-    let regionTimer = 0;
-    regionSelect.addEventListener('change', () => {
-      if (!src.regions.some(r => r.id === regionSelect.value)) return;
-      src.region = regionSelect.value;
-      el.querySelector('.pmeta h3 a').href = sourceHome(src);
-      el.querySelector('.psub').textContent = sourceSub(src);
-      /* 键盘方向键切换 select 会逐键触发 change，去抖后统一刷新，避免连发请求与骨架屏闪烁 */
-      clearTimeout(regionTimer);
-      regionTimer = setTimeout(() => enqueueLoad(src, el, { force:true, clear:true, supersede:true }), REGION_DEBOUNCE_MS);
-    });
-  }
   cardMap.set(src.id, el);
   return el;
-}
-async function loadX(src, signal){
-  const region = src.region || 'united-states';
-  const slug = region !== 'worldwide' ? `${region}/` : '';
-  const html = await getText(API_X + slug, 15000, 'text/html', signal);
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const rows = [...doc.querySelectorAll('#trends tr, #moreTrends tr')].filter(row => row.querySelector('th.pos'));
-  const items = rows.map(row => {
-    const title = row.querySelector('td.main a')?.textContent.trim() || '';
-    return {
-      title,
-      url: `https://x.com/search?q=${encodeURIComponent(title)}&src=trend_click&f=top`,
-    };
-  }).filter(it => it.title).slice(0, SHOW);
-  if (items.length) return items;
-  throw new Error('X 趋势数据异常');
 }
 async function loadNeteaseHot(_src, signal){
   const j = await getJSON(API_NETEASE, 18000, signal);
@@ -494,7 +363,6 @@ async function loadRSS(src, signal){
 const LOADERS = {
   netease: loadNeteaseHot,
   rss: loadRSS,
-  x: loadX,
 };
 function validateSources(){
   const seen = new Set();
@@ -504,7 +372,6 @@ function validateSources(){
     if (!src.cid && !src.api) console.warn('[hotboard] 数据源缺少 cid/api', src.id);
     if (src.api && !LOADERS[src.api]) console.warn('[hotboard] 未知 api', src.id, src.api);
     if (src.api === 'rss' && !src.feed) console.warn('[hotboard] RSS 数据源缺少 feed', src.id);
-    if (src.regions && !src.regions.some(r => r.id === src.region)) console.warn('[hotboard] 默认地区无效', src.id, src.region);
     if (!ICONS[src.id]) console.warn('[hotboard] 数据源缺少图标', src.id);
   });
 }
@@ -595,7 +462,7 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
   const previous = src._items ? { items: src._items, t: src._dataTs || Date.now() } : null;
   btn.classList.add('spin');
   btn.setAttribute('aria-busy', 'true');
-  if (!cached && !src._items) ft.hidden = !src.regions;
+  if (!cached && !src._items) ft.hidden = true;
   try{
     const items = cleanItems(await loadSource(src, ctrl.signal));
     if (seq !== src._seq) return { ok:false, superseded:true };
@@ -891,7 +758,6 @@ function applySearch(){
     const lis = [...ol.querySelectorAll('.rk')];
     const ft = el.querySelector('.card-ft');
     const more = el.querySelector('.more');
-    const hasRegion = el.classList.contains('has-region');
     const collapsed = ol.classList.contains('collapsed');
     const src = el._src;
     if (!searching){
@@ -899,7 +765,7 @@ function applySearch(){
       setSearchHint(el, '');
       lis.forEach(li => li.classList.remove('hide','over'));
       const cardTotal = src?._count ?? lis.length;
-      if (ft && !hasRegion) ft.hidden = cardTotal <= SHOW;
+      if (ft) ft.hidden = cardTotal <= SHOW;
       if (more){
         more.textContent = collapsed ? `展开全部（共 ${cardTotal} 条）` : '收起榜单';
         more.setAttribute('aria-expanded', String(!collapsed));
@@ -933,7 +799,7 @@ function applySearch(){
     }else{
       setSearchHint(el, '');
     }
-    if (ft && !hasRegion){
+    if (ft){
       const showMore = totalHits > SHOW || (totalHits > 0 && (seen === 0 || (collapsed && lis.length > SHOW))) || (!collapsed && items.length > SHOW);
       ft.hidden = !showMore;
       if (showMore && more){
