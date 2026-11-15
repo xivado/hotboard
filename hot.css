@@ -229,10 +229,6 @@ body.searching .next{display:none}
 .rk:hover .rk-t{color:var(--accent)}
 .rk-t::after{content:"↗";font-size:11px;margin-left:5px;opacity:0;color:var(--accent);transition:opacity .18s}
 .rk:hover .rk-t::after{opacity:.85}
-.rk-h{flex:none;display:flex;align-items:center;gap:3px;font:600 11px var(--font-mono);color:var(--muted);font-variant-numeric:tabular-nums}
-.rk-h svg{width:10px;height:10px;color:var(--accent2)}
-.rk-h.rk-score{color:var(--muted)}
-.rk-h.rk-score svg{color:var(--accent2-ink)}
 .ranklist.collapsed li:nth-child(n+11){display:none}
 body.searching .ranklist li:nth-child(n+11){display:flex}
 body.searching .ranklist li.hide{display:none}

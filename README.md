@@ -81,7 +81,7 @@
 
 | 来源 | 用途 | 说明 |
 | :--- | :--- | :--- |
-| [Codelife 开放接口](https://api.codelife.cc) | 主源（7 个） | 提供境内榜单，含热度值，CORS 开放；请求带时间戳绕过 CDN 缓存，数据仍可能滞后官方 |
+| [Codelife 开放接口](https://api.codelife.cc) | 主源（7 个） | 提供境内榜单，CORS 开放；请求带时间戳绕过 CDN 缓存，数据仍可能滞后官方 |
 | [网易新闻](https://news.163.com) | 综合源 | 经 Redocly 代理读取网易热点新闻榜 |
 | 海外媒体 RSS | 海外媒体源 | 经 Redocly 代理读取 BBC、纽约时报、卫报、半岛电视台的官方 RSS，按来源发布时间展示 |
 
@@ -182,7 +182,6 @@ hotboard/
 | `cid` | 二选一 | Codelife 榜单 ID，走主源时填写 |
 | `api` | 二选一 | 自定义数据源标识，当前支持 `rss`、`netease` |
 | `feed` | 否 | `api: 'rss'` 时必填，媒体官方 RSS 地址 |
-| `nohot` | 否 | 为 `true` 时不展示热度值 |
 | `home` | 是 | 平台官方热榜地址，点击卡片标题时跳转 |
 
 每个榜单需要提供 `cid` 或 `api` 之一。新增自定义数据源时，还需在 `LOADERS` 中补充对应分支。
@@ -224,7 +223,7 @@ const ICONS = {
 - **技术栈**：HTML5 / CSS3 / JavaScript（ES2020+），无第三方运行时依赖。
 - **数据请求**：`fetch` + `AbortController` 超时控制，首屏附近的卡片在视口加载，滚动、分类、搜索或刷新时补载；隐藏分类卡片不会被提前请求，最多 6 路并发。
 - **缓存与渲染**：按 `id + region` 使用 `sessionStorage` 缓存；先渲染缓存再后台刷新。列表默认只生成前 10 条 DOM，展开时补全，收起或清空搜索后回收。卡片使用 `content-visibility: auto` 跳过视口外渲染。渲染队列每帧只写入一张榜单；在 `requestAnimationFrame` 不可用的环境（窗口被遮挡、部分内嵌 WebView）由看门狗定时器接管出队，避免页面停留骨架屏。
-- **安全策略**：`index.html` 通过 meta CSP 限制脚本、样式、字体与 fetch 目标；字体仅允许本站；元素级内联样式被禁止，`style` 属性经 `style-src-attr` 单独放行；并设置 `strict-origin-when-cross-origin`。远程文本统一 HTML 转义，外部链接仅允许 http/https，并拒绝带用户名或密码的 URL；热度值仅接受字符串与数字（异常形状不展示，超长截断），所有 SVG 图标经 CI 扫描确保不含脚本。
+- **安全策略**：`index.html` 通过 meta CSP 限制脚本、样式、字体与 fetch 目标；字体仅允许本站；元素级内联样式被禁止，`style` 属性经 `style-src-attr` 单独放行；并设置 `strict-origin-when-cross-origin`。远程文本统一 HTML 转义，外部链接仅允许 http/https，并拒绝带用户名或密码的 URL，所有 SVG 图标经 CI 扫描确保不含脚本。
 - **主题系统**：CSS 自定义属性 + `data-theme`，内联脚本在样式加载前按系统偏好确定主题，`matchMedia` 监听系统切换。
 - **分类**：分类标题按钮使用 `aria-expanded` / `aria-controls`；分类筛选使用 `role="group"` + `aria-pressed`。
 - **本地字体**：ZCOOL QingKe HuangYou 与 JetBrains Mono 均为本地自托管。ZCOOL 仅包含当前展示文案所需的 173 个字符（约 27KB），JetBrains Mono 使用 latin 400/700（各约 21KB）；新增展示文案后运行 `node scripts/build-fonts.mjs`。
@@ -255,7 +254,7 @@ const ICONS = {
 
 本项目为**非商业性的个人学习与技术交流项目**。榜单数据来自各平台公开接口或公开页面，仅作聚合与展示，不设榜单数据库，也不将原始内容用于商业用途。
 
-榜单排序、热度值及内容均由来源平台提供，可能因接口调整、网络波动或平台自身原因出现延迟、缺漏或错误，请以各平台官方发布为准。本站不对数据的完整性、准确性和及时性作出保证，榜单内容也不代表本站观点。
+榜单排序及内容均由来源平台提供，可能因接口调整、网络波动或平台自身原因出现延迟、缺漏或错误，请以各平台官方发布为准。本站不对数据的完整性、准确性和及时性作出保证，榜单内容也不代表本站观点。
 
 页面中出现的平台名称、商标、标识及相关内容的版权均归各自权利人所有，本站与各平台无隶属或合作关系。如果权利人认为本站展示方式侵犯其合法权益，请通过[项目仓库 Issue](https://github.com/xivado/hotboard/issues) 联系维护者，核实后将及时删除相关内容或停止展示。
 

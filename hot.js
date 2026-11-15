@@ -5,22 +5,22 @@ const CATS = [
   { id:'global', name:'海外视野', en:'GLOBAL' },
 ];
 
-/* cid = codelife 榜单 ID；api = 自定义官方接口；feed = RSS 地址；nohot = 热度值无意义时不显示；home = 官方热榜页 */
+/* cid = codelife 榜单 ID；api = 自定义官方接口；feed = RSS 地址；home = 官方热榜页 */
 const SOURCES = [
   { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
   { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    cid:'mproPpoq6O',        home:'https://www.zhihu.com/hot' },
   { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'好文 · 好价榜',        cid:'K7GdagpoQy',                     home:'https://www.smzdm.com/' },
-  { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease', nohot:true,            home:'https://news.163.com/' },
+  { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease',            home:'https://news.163.com/' },
   { id:'sspai',      cat:'tech',   name:'少数派',        char:'少', color:'#e64552', sub:'高质量数字消费指南',   cid:'Y2KeDGQdNP',   home:'https://sspai.com/' },
   { id:'csdn',       cat:'tech',   name:'CSDN',          char:'C',  color:'#fc5531', sub:'综合热榜',             cid:'DgeyrgMoZq',                     home:'https://blog.csdn.net/rank/list' },
   { id:'zcool',      cat:'tech',   name:'站酷',          char:'酷', color:'#e07b00', sub:'热门设计作品榜',       cid:'VaobJ88oAj',                     home:'https://www.zcool.com.cn/' },
   { id:'huxiu',      cat:'tech',   name:'虎嗅',          char:'虎', color:'#d0021b', sub:'24小时热文',           cid:'5VaobgvAj1',                     home:'https://www.huxiu.com/' },
   /* 海外视野：境外平台，经公开接口或代理获取数据 */
   /* 海外媒体：经 Redocly 代理读取官方 RSS，按发布时间展示 */
-  { id:'bbc',        cat:'global', name:'BBC 新闻',      char:'BBC', color:'#bb1919', sub:'World News 国际新闻',  api:'rss', nohot:true, feed:'https://feeds.bbci.co.uk/news/world/rss.xml', home:'https://www.bbc.com/news/world' },
-  { id:'nyt',        cat:'global', name:'纽约时报',      char:'NYT', color:'#000000', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', home:'https://www.nytimes.com/section/world' },
-  { id:'guardian',   cat:'global', name:'卫报',          char:'卫',  color:'#052962', sub:'World 国际新闻',       api:'rss', nohot:true, feed:'https://www.theguardian.com/world/rss', home:'https://www.theguardian.com/world' },
-  { id:'aljazeera',  cat:'global', name:'半岛电视台',    char:'半',  color:'#f7a800', sub:'国际新闻头条',         api:'rss', nohot:true, feed:'https://www.aljazeera.com/xml/rss/all.xml', home:'https://www.aljazeera.com/' },
+  { id:'bbc',        cat:'global', name:'BBC 新闻',      char:'BBC', color:'#bb1919', sub:'World News 国际新闻',  api:'rss', feed:'https://feeds.bbci.co.uk/news/world/rss.xml', home:'https://www.bbc.com/news/world' },
+  { id:'nyt',        cat:'global', name:'纽约时报',      char:'NYT', color:'#000000', sub:'World 国际新闻',       api:'rss', feed:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', home:'https://www.nytimes.com/section/world' },
+  { id:'guardian',   cat:'global', name:'卫报',          char:'卫',  color:'#052962', sub:'World 国际新闻',       api:'rss', feed:'https://www.theguardian.com/world/rss', home:'https://www.theguardian.com/world' },
+  { id:'aljazeera',  cat:'global', name:'半岛电视台',    char:'半',  color:'#f7a800', sub:'国际新闻头条',         api:'rss', feed:'https://www.aljazeera.com/xml/rss/all.xml', home:'https://www.aljazeera.com/' },
 ];
 
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
@@ -62,20 +62,7 @@ const safeURL = u => {
 };
 const pad = n => String(n).padStart(2,'0');
 const fmtTime = ts => new Date(ts).toTimeString().slice(0,8);
-const FLAME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>';
-const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m12 2.6 2.9 5.9 6.5.9-4.7 4.6 1.1 6.4-5.8-3-5.8 3 1.1-6.4L2.6 9.4l6.5-.9z"/></svg>';
 
-function fmtHot(h){
-  /* 仅接受字符串/数字，防御上游返回对象、布尔等异常形状；超长串截断防撑破布局 */
-  if (typeof h !== 'string' && typeof h !== 'number') return '';
-  const s = String(h).trim();
-  if (!s) return '';
-  if (/[万亿]/.test(s)) return s;
-  const n = Number(s.replace(/[, ]/g,''));
-  if (!isNaN(n) && n >= 1e8) return (n/1e8).toFixed(1) + '亿';
-  if (!isNaN(n) && n >= 1e4) return (n/1e4).toFixed(1) + '万';
-  return s.length > 24 ? s.slice(0, 24) + '…' : s;
-}
 function cleanItems(arr){
   if (!Array.isArray(arr)) return [];
   return arr.map(it => {
@@ -83,7 +70,7 @@ function cleanItems(arr){
     const title = String(it.title ?? '').replace(/\s+/g,' ').trim();
     const url = String(it.url ?? '').trim();
     if (!title || !/^https?:\/\//i.test(url)) return null;
-    return { title, url, hot: it.hot ?? '', score: it.score ?? '' };
+    return { title, url };
   }).filter(Boolean).slice(0, 100);
 }
 function fmtStamp(ts){
@@ -200,14 +187,9 @@ function skeleton(){
 }
 function itemHTML(it, i){
   const r = i + 1;
-  const hot = fmtHot(it.hot);
-  const extra = it.score
-    ? `<span class="rk-h rk-score" title="豆瓣评分">${STAR}${esc(it.score)}</span>`
-    : hot ? `<span class="rk-h">${FLAME}${esc(hot)}</span>` : '';
   return `<li class="rk">
     <span class="rank${r <= 3 ? ' r'+r : ''}">${r}</span>
     <a class="rk-t" href="${esc(safeURL(it.url))}" target="_blank" rel="noopener noreferrer" title="${esc(it.title)}">${esc(it.title)}</a>
-    ${extra}
   </li>`;
 }
 /* 图标加载失败回退为字符徽标：隐藏 img 并显示 noicon 态 */
@@ -378,7 +360,7 @@ async function loadSource(src, signal){
   if (custom) return custom(src, signal);
   const j = await getJSON(API_CODELIFE(src.cid), 12000, signal);
   if (j && j.code === 200 && Array.isArray(j.data) && j.data.length){
-    return j.data.map(it => ({ title: it.title, hot: src.nohot ? '' : it.hotValue, url: it.link }));
+    return j.data.map(it => ({ title: it.title, url: it.link }));
   }
   throw new Error('主源数据异常');
 }
