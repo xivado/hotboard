@@ -8,7 +8,7 @@ const CATS = [
 /* cid = codelife 榜单 ID；api = 自定义官方接口；feed = RSS 地址；home = 官方热榜页 */
 const SOURCES = [
   { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
-  { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    cid:'mproPpoq6O',        home:'https://www.zhihu.com/hot' },
+  { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    api:'zhihu', cid:'mproPpoq6O', home:'https://www.zhihu.com/hot' },
   { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'好文 · 好价榜',        cid:'K7GdagpoQy',                     home:'https://www.smzdm.com/' },
   { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease',            home:'https://news.163.com/' },
   { id:'sspai',      cat:'tech',   name:'少数派',        char:'少', color:'#e64552', sub:'高质量数字消费指南',   cid:'Y2KeDGQdNP',   home:'https://sspai.com/' },
@@ -45,6 +45,8 @@ const FAIL_ALERT_MIN = 3;        /* 失败提示条显示的失败数阈值 */
 /* 时间戳绕过 CDN 缓存，减少榜单滞后 */
 const API_CODELIFE = id => `https://api.codelife.cc/api/top/list?lang=cn&id=${encodeURIComponent(id)}&_=${Date.now()}`;
 const API_NETEASE    = 'https://cors.redoc.ly/https://m.163.com/fe/api/hot/news/flow';
+/* 知乎热榜：官方公开接口，无 CORS 头，经 Redocly 代理读取；Codelife 快照仅作回退 */
+const API_ZHIHU      = 'https://cors.redoc.ly/https://api.zhihu.com/topstory/hot-list?limit=30';
 
 /* ================= 工具 ================= */
 const $  = s => document.querySelector(s);
@@ -340,6 +342,7 @@ async function loadRSS(src, signal){
   throw new Error('新闻 RSS 数据异常');
 }
 const LOADERS = {
+  zhihu: loadZhihuHot,
   netease: loadNeteaseHot,
   rss: loadRSS,
 };
@@ -355,14 +358,36 @@ function validateSources(){
   });
 }
 validateSources();
-async function loadSource(src, signal){
-  const custom = LOADERS[src.api];
-  if (custom) return custom(src, signal);
+async function loadCodelife(src, signal){
   const j = await getJSON(API_CODELIFE(src.cid), 12000, signal);
   if (j && j.code === 200 && Array.isArray(j.data) && j.data.length){
     return j.data.map(it => ({ title: it.title, url: it.link }));
   }
   throw new Error('主源数据异常');
+}
+async function loadZhihuHot(src, signal){
+  try{
+    const j = await getJSON(API_ZHIHU, 15000, signal);
+    const items = (Array.isArray(j?.data) ? j.data : []).map(it => {
+      const t = it?.target || {};
+      let url = String(t.url || '');
+      /* 接口返回的是 api.zhihu.com 地址，换成网页地址；question id 超 Number 安全范围，取字符串 */
+      const qid = /^https:\/\/api\.zhihu\.com\/questions\/(\d+)$/.exec(url)?.[1]
+        || /^Q_(\d+)$/.exec(it?.card_id || '')?.[1];
+      if (qid) url = `https://www.zhihu.com/question/${qid}`;
+      return { title: t.title, url };
+    }).filter(it => it.title && /^https:\/\/www\.zhihu\.com\/question\/\d+$/.test(it.url));
+    if (items.length) return items.slice(0, 30);
+  }catch(e){
+    if (signal?.aborted) throw e;
+    console.warn('[hotboard] 知乎官方接口失败，回退 Codelife', e?.name === 'AbortError' ? '请求超时' : e);
+  }
+  return loadCodelife(src, signal);
+}
+async function loadSource(src, signal){
+  const custom = LOADERS[src.api];
+  if (custom) return custom(src, signal);
+  return loadCodelife(src, signal);
 }
 function friendlyError(reason){
   if (reason === '请求超时') return '请求超时，请稍后重试';

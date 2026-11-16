@@ -69,7 +69,7 @@ check('榜单数量为 12', sources.length === 12, `榜单数量 ${sources.lengt
 check('榜单 id 唯一', new Set(sources.map(s => s.id)).size === sources.length);
 check('所有分类都在 CATS 中', sources.every(s => catIds.includes(s.cat)), sources.filter(s => !catIds.includes(s.cat)).map(s => s.id).join(','));
 
-const allowedApis = new Set(['netease', 'rss']);
+const allowedApis = new Set(['zhihu', 'netease', 'rss']);
 const badSources = sources.filter(s => {
   if (!s.cid && !s.api) return true;
   if (s.api && !allowedApis.has(s.api)) return true;
