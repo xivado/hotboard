@@ -9,7 +9,7 @@ const CATS = [
 const SOURCES = [
   { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
   { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    api:'zhihu', cid:'mproPpoq6O', home:'https://www.zhihu.com/hot' },
-  { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'好文 · 好价榜',        cid:'K7GdagpoQy',                     home:'https://www.smzdm.com/' },
+  { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'值客原创 · 最新好文',  api:'rss', feed:'https://post.smzdm.com/feed/', home:'https://post.smzdm.com/' },
   { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease',            home:'https://news.163.com/' },
   { id:'sspai',      cat:'tech',   name:'少数派',        char:'少', color:'#e64552', sub:'高质量数字消费指南',   cid:'Y2KeDGQdNP',   home:'https://sspai.com/' },
   { id:'csdn',       cat:'tech',   name:'CSDN',          char:'C',  color:'#fc5531', sub:'综合热榜',             cid:'DgeyrgMoZq',                     home:'https://blog.csdn.net/rank/list' },
