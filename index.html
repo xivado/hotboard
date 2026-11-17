@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://cors.redoc.ly" crossorigin>
 <link rel="preconnect" href="https://api.codelife.cc" crossorigin>
 <!-- 静态资源版本：更新 hot.css / hot.js 后同步修改 v= 参数 -->
-<link rel="stylesheet" href="hot.css?v=20261117-1">
+<link rel="stylesheet" href="hot.css?v=20261117-2">
 <!-- 字体为自托管子集；新增展示文案后运行 node scripts/build-fonts.mjs 重新生成 -->
 <link rel="preload" as="font" type="font/woff2" href="fonts/zcool-ui.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/jetbrains-mono-400.woff2" crossorigin>
@@ -36,15 +36,6 @@
 <body>
 <a class="skip" href="#board">跳到榜单内容</a>
 <h1 class="sr-only">今日热榜 · 全网热点实时聚合</h1>
-
-<nav class="controls" aria-label="刷新状态">
-  <div class="wrap">
-    <div class="next">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <b id="cd">05:00</b><span>后自动刷新</span>
-    </div>
-  </div>
-</nav>
 
 <div class="wrap src-alert" id="src-alert" role="status" hidden>
   <span id="src-alert-text">部分榜单数据源暂时不可用</span>
@@ -77,6 +68,11 @@
       <span class="fstat" title="本次页面打开耗时">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         本次加载 <b id="stat-load">…</b>
+      </span>
+      <span class="fsep" aria-hidden="true">/</span>
+      <span class="fstat" title="下次自动刷新倒计时">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <b id="cd">05:00</b> 后自动刷新
       </span>
     </p>
     <p class="ai-badge" title="本页面由 AI 辅助生成">
@@ -123,6 +119,6 @@
 <div id="toasts" aria-live="polite"></div>
 <noscript><div class="ns">热榜需要 JavaScript 才能加载数据，请在浏览器中启用 JavaScript 后刷新页面。</div></noscript>
 
-<script src="hot.js?v=20261117-1"></script>
+<script src="hot.js?v=20261117-2"></script>
 </body>
 </html>
