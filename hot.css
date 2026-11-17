@@ -96,59 +96,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
 .controls .wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.search{position:relative;flex:none}
-.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none}
-.search input{
-  width:230px;height:36px;padding:0 58px 0 34px;border-radius:10px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);
-  font:400 13px var(--font-body);transition:width .22s ease,border-color .22s ease,box-shadow .22s ease;
-}
-.search input::placeholder{color:var(--muted)}
-.search input::-webkit-search-cancel-button,
-.search input::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
-.search input::-moz-search-cancel-button{display:none}
-.search input::-ms-clear{display:none}
-.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.search kbd{
-  position:absolute;right:9px;top:50%;transform:translateY(-50%);
-  font:600 10px var(--font-mono);color:var(--muted);
-  border:1px solid var(--line);border-radius:5px;padding:2px 6px;background:var(--soft);
-}
-.search .clr{position:absolute;right:30px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;display:none;align-items:center;justify-content:center;color:var(--muted);font-size:15px;line-height:1}
-.search.has .clr{display:flex}
-.search .clr:hover{color:var(--accent)}
-.sstat{
-  display:inline-flex;align-items:center;gap:6px;flex:none;white-space:nowrap;line-height:1;
-  padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:var(--soft);
-  font:600 11.5px var(--font-mono);letter-spacing:.2px;color:var(--ink);
-  animation:stat-in .2s ease both;
-}
-.sstat::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
-.sstat[hidden]{display:none}
-@keyframes stat-in{from{opacity:0;transform:translateY(-2px)}to{opacity:1;transform:none}}
-.search-empty{margin:28px auto;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}
-.search-hint{margin:2px 9px 8px;color:var(--muted);font-size:12px;line-height:1.5}
-.card.search-hide,.grid.search-hide,.cat-label.search-hide{display:none}
-.err-detail{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.5}
-.tabs{display:flex;gap:4px;flex-wrap:wrap}
-.tab{
-  position:relative;padding:8px 14px;font-family:var(--font-display);font-size:15.5px;
-  letter-spacing:1.5px;color:var(--muted);border-radius:9px;transition:color .2s ease,background-color .2s ease;
-}
-.tab b{font:600 10.5px var(--font-mono);color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:2px;transition:color .2s ease,background-color .2s ease,border-color .2s ease}
-.tab:hover{color:var(--ink);background:var(--soft)}
-.tab.on{color:var(--accent)}
-.tab.on b{color:#fff;background:var(--accent);border-color:var(--accent)}
-.tab::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:3px;border-radius:3px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .28s cubic-bezier(.22,1,.36,1)}
-.tab.on::after{transform:scaleX(1)}
 .next{margin-left:auto;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;white-space:nowrap}
-body.searching .next{display:none}
 .next svg{width:13px;height:13px;color:var(--accent2)}
 .next b{font:700 13px var(--font-mono);color:var(--ink);font-variant-numeric:tabular-nums}
 
 /* ============ 分类标题 ============ */
 .cat-label{display:flex;align-items:center;gap:12px;margin:30px 0 16px;font-weight:400}
-.cat-label.off{display:none}
 .cat-label:first-child{margin-top:22px}
 .cat-toggle{
   display:inline-flex;align-items:center;gap:12px;padding:2px 0;
@@ -176,8 +129,6 @@ body.searching .next{display:none}
 }
 .card:has(.sk){contain-intrinsic-size:auto 375px}
 .card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--accent) 32%,var(--line))}
-.card.off{display:none}
-.card.dim{opacity:.32;filter:grayscale(.7)}
 /* 滚动浮现 */
 .reveal{opacity:0;transform:translateY(16px)}
 .reveal.in{opacity:1;transform:translateY(0);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1),box-shadow .25s ease,border-color .25s ease}
@@ -230,9 +181,6 @@ body.searching .next{display:none}
 .rk-t::after{content:"↗";font-size:11px;margin-left:5px;opacity:0;color:var(--accent);transition:opacity .18s}
 .rk:hover .rk-t::after{opacity:.85}
 .ranklist.collapsed li:nth-child(n+11){display:none}
-body.searching .ranklist li:nth-child(n+11){display:flex}
-body.searching .ranklist li.hide{display:none}
-body.searching .ranklist li.over{display:none}
 .rk.hide{display:none}
 
 .card-ft{border-top:1px dashed var(--line);margin:0;text-align:left}
@@ -398,14 +346,11 @@ noscript .ns{max-width:520px;margin:80px auto;text-align:center;font-size:15px;c
 
 /* ============ 响应式 ============ */
 @media (hover:none){
-  .search kbd{display:none}
-  .search input{padding-right:34px}
   .card:hover{transform:none;box-shadow:none;border-color:var(--line)}
   .rk:hover{transform:none}
 }
 @media (max-width:860px){
   .wrap{padding:0 18px}
-  .search input{width:170px;font-size:16px}
   .grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
   .pmeta p{flex-wrap:wrap;white-space:normal;row-gap:1px}
   .ptime{flex:none}
@@ -418,14 +363,6 @@ noscript .ns{max-width:520px;margin:80px auto;text-align:center;font-size:15px;c
   .iconbtn{width:44px;height:44px}
   .controls{padding:10px 0 8px}
   .controls .wrap{gap:10px}
-  .tabs{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch;position:relative}
-  .tabs::after{content:"";position:sticky;right:0;flex:0 0 22px;margin-left:-22px;pointer-events:none;background:linear-gradient(90deg,transparent,var(--bg))}
-  .tab{flex:none;padding:10px 14px;font-size:14.5px;min-height:44px;display:inline-flex;align-items:center}
-  .search{flex:1}
-  .search input,.search input:focus{width:100%}
-  .search input{height:44px;font-size:16px;padding-right:64px}
-  .search .clr{right:12px;width:44px;height:44px;font-size:18px}
-  .search kbd{display:none}
   .sstat{padding:4px 8px;border-radius:7px;font-size:11px}
   .src-alert{flex-wrap:wrap;padding:8px 12px;font-size:11.5px;text-align:center}
   .src-alert button{min-height:44px}

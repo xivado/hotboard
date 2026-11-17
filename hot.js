@@ -7,7 +7,6 @@ const CATS = [
 
 /* cid = codelife 榜单 ID；api = 自定义官方接口；feed = RSS 地址；home = 官方热榜页 */
 const SOURCES = [
-  { id:'weibo',      cat:'hot',    name:'微博热搜',      char:'微', color:'#e6162d', sub:'随时随地发现新鲜事',   cid:'KqndgxeLl9',        home:'https://s.weibo.com/top/summary' },
   { id:'zhihu',      cat:'hot',    name:'知乎热榜',      char:'知', color:'#0084ff', sub:'有问题 就会有答案',    api:'zhihu', cid:'mproPpoq6O', home:'https://www.zhihu.com/hot' },
   { id:'smzdm',      cat:'hot',    name:'什么值得买',    char:'值', color:'#e02727', sub:'值客原创 · 最新好文',  api:'rss', feed:'https://post.smzdm.com/feed/', home:'https://post.smzdm.com/' },
   { id:'netease',    cat:'hot',    name:'网易新闻',      char:'网', color:'#d0021b', sub:'热点新闻榜',           api:'netease',            home:'https://news.163.com/' },
@@ -25,10 +24,10 @@ const SOURCES = [
 
 /* 官方图标（本地资源，加载失败时回退为字符徽标） */
 const ICONS = {
-  weibo:'weibo.svg',          zhihu:'zhihu.png',          smzdm:'smzdm.jpg',
-  netease:'netease.jpg',      sspai:'sspai.png',          csdn:'csdn.svg',
-  zcool:'zcool.svg',          huxiu:'huxiu.jpg',          bbc:'bbc.svg',
-  nyt:'newyorktimes.svg',     guardian:'theguardian.svg', aljazeera:'aljazeera.png',
+  zhihu:'zhihu.png',          smzdm:'smzdm.jpg',          netease:'netease.jpg',
+  sspai:'sspai.png',          csdn:'csdn.svg',            zcool:'zcool.svg',
+  huxiu:'huxiu.jpg',          bbc:'bbc.svg',              nyt:'newyorktimes.svg',
+  guardian:'theguardian.svg', aljazeera:'aljazeera.png',
 };
 const iconURL = id => ICONS[id] ? `icons/${ICONS[id]}` : '';
 
@@ -249,12 +248,6 @@ function trimList(src, el){
     more.setAttribute('aria-expanded', 'false');
   }
 }
-function trimCollapsedLists(){
-  cardMap.forEach(el => {
-    const src = el._src;
-    if (src?._hydrated && !src._expanded) trimList(src, el);
-  });
-}
 function renderCardData(src, el, items, ts){
   src._count = items.length;
   src._dataTs = ts;
@@ -310,8 +303,7 @@ function buildCard(src){
     const collapsed = ol.classList.toggle('collapsed');
     src._expanded = !collapsed;
     this.setAttribute('aria-expanded', String(!collapsed));
-    if (qInput.value.trim()) scheduleSearch();
-    else if (collapsed) trimList(src, el);
+    if (collapsed) trimList(src, el);
     else this.textContent = '收起榜单';
   });
   cardMap.set(src.id, el);
@@ -455,7 +447,6 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
       renderCardData(src, el, cached.items, cached.t);
       if (!force && Date.now() - cached.t < REFRESH_MS){
         btn.classList.remove('spin');
-        if (qInput.value.trim()) scheduleSearch();
         return { ok:true, shown:true, cached:true };
       }
     }catch(e){
@@ -474,7 +465,6 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
     writeCache(src, items);
     if (!(await renderIfCurrent(src, seq))) return { ok:false, superseded:true };
     renderCardData(src, el, items, Date.now());
-    if (qInput.value.trim()) scheduleSearch();
     return { ok:true, shown:true, count:items.length };
   }catch(e){
     if (seq !== src._seq) return { ok:false, superseded:true };
@@ -487,7 +477,6 @@ async function loadCard(src, el, { force = false, clear = false } = {}){
       const ptime = el.querySelector('.ptime');
       ptime.textContent = (cached ? '缓存 · ' : '上次数据 · ') + fmtStamp(fallback.t);
       ptime.title = `网络刷新失败（${reason}），显示${cached ? '缓存数据' : '上次成功数据'}`;
-      if (qInput.value.trim()) scheduleSearch();
       return { ok:false, shown:true, stale:true, reason };
     }
     if (!(await renderIfCurrent(src, seq))) return { ok:false, superseded:true };
@@ -554,17 +543,11 @@ async function drainLoadQueue(){
     if (job.src._promise === job.promise) job.src._promise = null;
     job.resolve(result || { ok:false, shown:false, reason:'unknown' });
     updateSourceAlert();
-    if (qInput.value.trim()) scheduleSearch();
     drainLoadQueue();
   }
 }
 function loadGridCards(grid){
   grid?.querySelectorAll('.card').forEach(el => enqueueLoad(el._src, el));
-}
-function loadAllCards(){
-  SOURCES.forEach(src => {
-    if (src._state !== 'error') enqueueLoad(src, cardMap.get(src.id));
-  });
 }
 let sourceAlertDismissedAt = 0;
 function updateSourceAlert(){
@@ -572,17 +555,14 @@ function updateSourceAlert(){
   if (!alert) return;
   const failed = SOURCES.filter(s => s._state === 'error').length;
   if (failed === 0) sourceAlertDismissedAt = 0;
-  const searching = !!qInput.value.trim();
-  const show = failed >= FAIL_ALERT_MIN || (searching && failed > 0);
+  const show = failed >= FAIL_ALERT_MIN;
   if (!show || (sourceAlertDismissedAt && failed <= sourceAlertDismissedAt)){
     alert.hidden = true;
     return;
   }
   alert.hidden = false;
   const text = $('#src-alert-text');
-  if (text) text.textContent = searching
-    ? `${failed} 个榜单来源失败，搜索结果可能不完整`
-    : `${failed} 个榜单数据源暂时不可用，部分卡片显示缓存或错误状态`;
+  if (text) text.textContent = `${failed} 个榜单数据源暂时不可用，部分卡片显示缓存或错误状态`;
 }
 $('#src-alert-close')?.addEventListener('click', () => {
   sourceAlertDismissedAt = SOURCES.filter(s => s._state === 'error').length;
@@ -594,8 +574,6 @@ $('#src-retry')?.addEventListener('click', () => {
 });
 
 /* 组装板块：分类标题 + 卡片 */
-const catGrids = [];
-let searchFoldedCats = null;
 function setGridFolded(grid, folded){
   grid.classList.toggle('folded', folded);
   const label = grid.previousElementSibling;
@@ -628,16 +606,10 @@ CATS.forEach(cat => {
     grid.appendChild(el);
   });
   board.appendChild(grid);
-  catGrids.push(grid);
   label.querySelector('.cat-toggle').addEventListener('click', () => {
     const folded = !grid.classList.contains('folded');
     setGridFolded(grid, folded);
     if (!folded) loadGridCards(grid);
-    if (qInput.value.trim() && searchFoldedCats){
-      if (folded) searchFoldedCats.add(grid);
-      else searchFoldedCats.delete(grid);
-    }
-    if (qInput.value.trim()) scheduleSearch();
   });
 });
 
@@ -679,195 +651,13 @@ window.addEventListener('scroll', () => {
   loadNearViewport();
 }, { passive:true });
 
-/* ================= 分类页签 ================= */
-const tabsBox = $('#tabs');
-function setActiveTab(cat, load){
-  tabsBox.querySelectorAll('.tab').forEach(b => {
-    const on = b.dataset.cat === cat;
-    b.classList.toggle('on', on);
-    b.setAttribute('aria-pressed', String(on));
-  });
-  board.querySelectorAll('.card, .cat-label').forEach(el => el.classList.toggle('off', cat !== 'all' && el.dataset.cat !== cat));
-  const activeBtn = [...tabsBox.querySelectorAll('.tab')].find(b => b.dataset.cat === cat);
-  if (activeBtn) activeBtn.scrollIntoView({ inline:'center', block:'nearest' });
-  if (load && cat !== 'all') loadGridCards($('#grid-' + cat));
-}
-function buildTabs(){
-  const all = [{ id:'all', name:'全部', n: SOURCES.length }, ...CATS.map(c => ({ id:c.id, name:c.name, n: SOURCES.filter(s => s.cat === c.id).length }))];
-  tabsBox.innerHTML = all.map((t,i) =>
-    `<button class="tab${i===0?' on':''}" aria-pressed="${i===0}" data-cat="${esc(t.id)}">${esc(t.name)}<b>${t.n}</b></button>`).join('');
-  tabsBox.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
-    const searching = !!qInput.value.trim();
-    if (searching) searchTabBefore = btn.dataset.cat;
-    setActiveTab(btn.dataset.cat, !searching);
-    if (searching) scheduleSearch();
-  }));
-}
-buildTabs();
-
-/* ================= 搜索过滤 ================= */
-const qInput = $('#q'), sstat = $('#sstat'), searchEmpty = $('#search-empty');
-let searchFrame = 0;
-let searchTabBefore = null;
-function scheduleSearch(){
-  if (searchFrame) return;
-  const run = () => { searchFrame = 0; applySearch(); };
-  searchFrame = requestAnimationFrame(run);
-  /* rAF 不触发的环境下由定时器兜底执行，避免搜索过滤永久挂起 */
-  setTimeout(() => { if (searchFrame){ cancelAnimationFrame(searchFrame); searchFrame = 0; run(); } }, 200);
-}
-function setSearchHint(el, text){
-  const body = el.querySelector('.card-bd');
-  if (!body) return;
-  let hint = body.querySelector('.search-hint');
-  if (!text){ if (hint) hint.remove(); return; }
-  if (!hint){
-    hint = document.createElement('p');
-    hint.className = 'search-hint';
-    body.prepend(hint);
-  }
-  hint.textContent = text;
-}
-function applySearch(){
-  const q = qInput.value.trim().toLowerCase();
-  const searching = !!q;
-  if (searching){
-    if (searchTabBefore === null){
-      searchTabBefore = tabsBox.querySelector('.tab.on')?.dataset.cat || 'all';
-      if (searchTabBefore !== 'all'){
-        setActiveTab('all', false);
-        toast('搜索范围已切换到全部榜单');
-      }
-    }
-    loadAllCards();
-  }else if (searchTabBefore !== null){
-    const restore = searchTabBefore;
-    searchTabBefore = null;
-    setActiveTab(restore, false);
-  }
-  if (searching && !searchFoldedCats){
-    searchFoldedCats = new Set(catGrids.filter(g => g.classList.contains('folded')));
-    searchFoldedCats.forEach(g => setGridFolded(g, false));
-  }else if (!searching && searchFoldedCats){
-    searchFoldedCats.forEach(g => setGridFolded(g, true));
-    searchFoldedCats = null;
-    trimCollapsedLists();
-  }
-  document.body.classList.toggle('searching', searching);
-  document.querySelector('.search').classList.toggle('has', searching);
-  let total = 0;
-  cardMap.forEach(el => {
-    const ol = el.querySelector('.ranklist');
-    if (!ol){ el.classList.remove('dim'); el.classList.toggle('search-hide', searching); return; }
-    const lis = [...ol.querySelectorAll('.rk')];
-    const ft = el.querySelector('.card-ft');
-    const more = el.querySelector('.more');
-    const collapsed = ol.classList.contains('collapsed');
-    const src = el._src;
-    if (!searching){
-      el.classList.remove('dim','search-hide');
-      setSearchHint(el, '');
-      lis.forEach(li => li.classList.remove('hide','over'));
-      const cardTotal = src?._count ?? lis.length;
-      if (ft) ft.hidden = cardTotal <= SHOW;
-      if (more){
-        more.textContent = collapsed ? `展开全部（共 ${cardTotal} 条）` : '收起榜单';
-        more.setAttribute('aria-expanded', String(!collapsed));
-      }
-      return;
-    }
-    if (el.classList.contains('off')){
-      el.classList.remove('dim');
-      setSearchHint(el, '');
-      lis.forEach(li => li.classList.remove('hide','over'));
-      return;
-    }
-    const items = src?._items || [];
-    const totalHits = items.reduce((n, it) => n + (String(it?.title || '').toLowerCase().includes(q) ? 1 : 0), 0);
-    const firstHit = items.findIndex(it => String(it?.title || '').toLowerCase().includes(q));
-    let seen = 0, visible = 0;
-    lis.forEach(li => {
-      const text = li._search ?? li.querySelector('.rk-t').textContent.toLowerCase();
-      const hit = text.includes(q);
-      if (hit) seen++;
-      li.classList.toggle('hide', !hit);
-      const over = hit && collapsed && seen > SHOW;
-      li.classList.toggle('over', over);
-      if (hit && !over) visible++;
-    });
-    total += totalHits;
-    el.classList.toggle('dim', totalHits === 0);
-    el.classList.toggle('search-hide', totalHits === 0);
-    if (totalHits > 0 && visible === 0){
-      setSearchHint(el, firstHit >= 0 ? `匹配内容在列表第 ${firstHit + 1} 条，展开后查看` : '匹配内容在列表更下方，展开后查看');
-    }else{
-      setSearchHint(el, '');
-    }
-    if (ft){
-      const showMore = totalHits > SHOW || (totalHits > 0 && (seen === 0 || (collapsed && lis.length > SHOW))) || (!collapsed && items.length > SHOW);
-      ft.hidden = !showMore;
-      if (showMore && more){
-        more.textContent = collapsed ? `展开全部（匹配 ${totalHits} 条）` : '收起榜单';
-        more.setAttribute('aria-expanded', String(!collapsed));
-      }
-    }
-  });
-  catGrids.forEach(grid => {
-    const label = grid.previousElementSibling;
-    const hasMatch = searching && [...grid.querySelectorAll('.card')].some(c => !c.classList.contains('off') && !c.classList.contains('search-hide'));
-    grid.classList.toggle('search-hide', searching && !hasMatch);
-    if (label) label.classList.toggle('search-hide', searching && !hasMatch);
-  });
-  const pending = SOURCES.some(s => s._state === 'queued' || s._state === 'loading');
-  const failures = SOURCES.filter(s => s._state === 'error').length;
-  sstat.hidden = !searching;
-  if (searching){
-    const activeCat = tabsBox.querySelector('.tab.on')?.dataset.cat || 'all';
-    if (pending) sstat.textContent = `搜索中 · ${total} 条`;
-    else if (failures && total === 0) sstat.textContent = `搜索受限 · ${failures} 个`;
-    else sstat.textContent = activeCat === 'all' ? `匹配 ${total} 条` : `当前分类 · ${total} 条`;
-    sstat.title = failures ? `${failures} 个来源失败，结果可能不完整` : '';
-  }
-  searchEmpty.hidden = !(searching && total === 0);
-  if (searching && total === 0){
-    searchEmpty.textContent = pending
-      ? '正在搜索全部榜单…'
-      : failures
-        ? `有 ${failures} 个榜单数据源暂时不可用，暂时无法确认是否匹配，可稍后重试。`
-        : '没有找到匹配的内容，试试更短的关键词。';
-  }
-  updateSourceAlert();
-}
-let searchTimer = null;
-qInput.addEventListener('input', () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(scheduleSearch, SEARCH_DEBOUNCE_MS);
-});
-$('#q-clr').addEventListener('click', () => {
-  clearTimeout(searchTimer);
-  qInput.value = '';
-  applySearch();
-  qInput.focus();
-});
-document.addEventListener('keydown', e => {
-  /* 输入法组词期间的按键（中文输入场景）不触发快捷键，避免 Esc 误清空搜索 */
-  if (e.isComposing || e.keyCode === 229) return;
-  if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && document.activeElement !== qInput && !dInfo.open){ e.preventDefault(); qInput.focus(); }
-  if (e.key === 'Escape' && document.activeElement === qInput){
-    clearTimeout(searchTimer);
-    qInput.value='';
-    applySearch();
-    qInput.blur();
-  }
-});
-
 /* ================= 加载与自动刷新 ================= */
 let nextAt = Date.now() + REFRESH_MS;
 let refreshing = false;
 let silentSkips = 0;
 async function refreshAll(silent, force = true, onlyLoaded = false){
   if (refreshing) return;
-  if (silent && (qInput.value.trim() || dInfo.open)){
+  if (silent && dInfo.open){
     /* 搜索或弹窗打开期间暂缓自动刷新；连续 2 次后强制执行，避免数据无限期停更 */
     if (++silentSkips < 3){
       nextAt = Date.now() + REFRESH_MS;
