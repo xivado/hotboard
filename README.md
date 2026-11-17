@@ -146,6 +146,7 @@ hotboard/
 ├── .github/
 │   └── workflows/check.yml # push / PR 自动运行静态检查
 ├── .gitignore   # 忽略依赖、环境文件、日志和系统临时文件
+├── LICENSE      # MIT 许可证
 └── README.md    # 项目说明
 ```
 
@@ -261,4 +262,4 @@ const ICONS = {
 
 ## 许可证
 
-本项目基于 [MIT License](https://opensource.org/licenses/MIT) 开源。
+本项目基于 [MIT License](./LICENSE) 开源，版权归 [xivado](https://github.com/xivado) 所有。
